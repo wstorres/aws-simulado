@@ -215,36 +215,35 @@ function generateQuestionId(text) {
 // --- PARSER DE TEXTO ATUALIZADO COM DOMÍNIOS ---
 function parseTXTQuestions(text) {
     const normalizedText = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
-    
-    const questionSplitRegex = /(?:^|\n)(?=\d+[\.\-\)]|\bQuest[aã]o\s+\d+|\bQuestion\s+\d+)/i;
-    const blocks = normalizedText.split(questionSplitRegex);
     const parsedQuestions = [];
     
-    for (let block of blocks) {
-        block = block.trim();
-        if (!block) continue;
-        
-        // --- PARSER PARA QUESTÕES EM LINHA ÚNICA (INLINE) ---
-        const hasOptionsInline = /\bA[\)\.\-\s]+/.test(block) && /(?:resposta|gabarito|answer|correct|correta)\s*[:\-]?\s*[A-E]/i.test(block);
+    // 1. Tentar ler como questões por linha (caso do formato inline)
+    const lines = normalizedText.split('\n').map(l => l.trim()).filter(l => l !== '');
+    let inlineCount = 0;
+    
+    for (let line of lines) {
+        // Enforce that option A must be followed by a parenthesis, dot or dash (not just a space)
+        const hasOptionsInline = /\bA[\)\.\-]\s+/.test(line) && /(?:resposta|gabarito|answer|correct|correta)\s*[:\-]?\s*[A-E]/i.test(line);
         if (hasOptionsInline) {
             let answer = "";
             let domain = null;
             
-            const ansM = block.match(/(?:resposta|gabarito|answer|correct|correta)\s*[:\-]?\s*([A-E](?:\s*(?:e|and|ou|or)\s*[A-E])?)/i);
+            const ansM = line.match(/(?:resposta|gabarito|answer|correct|correta)\s*[:\-]?\s*([A-E](?:\s*(?:e|and|ou|or)\s*[A-E])?)/i);
             if (ansM) answer = ansM[1].toUpperCase().trim();
             
-            const domM = block.match(/(?:dom[ií]nio|domain|d)\s*[:\-]?\s*([1-4])/i);
+            const domM = line.match(/(?:dom[ií]nio|domain|d)\s*[:\-]?\s*([1-4])/i);
             if (domM) domain = parseInt(domM[1]);
             
-            let cleanLine = block.replace(/(?:resposta|gabarito|answer|correct|correta)\s*[:\-]?\s*([A-E](?:\s*(?:e|and|ou|or)\s*[A-E])?)/i, '')
+            let cleanLine = line.replace(/(?:resposta|gabarito|answer|correct|correta)\s*[:\-]?\s*([A-E](?:\s*(?:e|and|ou|or)\s*[A-E])?)/i, '')
                                  .replace(/(?:dom[ií]nio|domain|d)\s*[:\-]?\s*([1-4])/i, '')
                                  .trim();
             
             let questionText = "";
             const options = {};
             
-            const match5 = cleanLine.match(/^(.*?)\bA[\)\.\-\s]+(.*?)\bB[\)\.\-\s]+(.*?)\bC[\)\.\-\s]+(.*?)\bD[\)\.\-\s]+(.*?)\bE[\)\.\-\s]+(.*?)$/i);
-            const match4 = cleanLine.match(/^(.*?)\bA[\)\.\-\s]+(.*?)\bB[\)\.\-\s]+(.*?)\bC[\)\.\-\s]+(.*?)\bD[\)\.\-\s]+(.*?)$/i);
+            // Match option markers followed by parenthesis, dot or dash
+            const match5 = cleanLine.match(/^(.*?)\bA[\)\.\-]+(.*?)\bB[\)\.\-]+(.*?)\bC[\)\.\-]+(.*?)\bD[\)\.\-]+(.*?)\bE[\)\.\-]+(.*?)$/i);
+            const match4 = cleanLine.match(/^(.*?)\bA[\)\.\-]+(.*?)\bB[\)\.\-]+(.*?)\bC[\)\.\-]+(.*?)\bD[\)\.\-]+(.*?)$/i);
             
             if (match5) {
                 questionText = match5[1].trim();
@@ -278,13 +277,26 @@ function parseTXTQuestions(text) {
                     answer: answer,
                     domain: domain
                 });
-                continue; // Processado com sucesso como inline!
+                inlineCount++;
             }
         }
+    }
+    
+    // Se conseguimos ler questões inline com sucesso, retornamos a lista diretamente!
+    if (inlineCount > 0) {
+        return parsedQuestions;
+    }
+    
+    // 2. Se não houver questões inline, usa o parser tradicional multilinhas
+    const questionSplitRegex = /(?:^|\n)(?=\d+[\.\-\)]|\bQuest[aã]o\s+\d+|\bQuestion\s+\d+)/i;
+    const blocks = normalizedText.split(questionSplitRegex);
+    
+    for (let block of blocks) {
+        block = block.trim();
+        if (!block) continue;
         
-        // --- PARSER TRADICIONAL PARA MÚLTIPLAS LINHAS ---
-        const lines = block.split('\n').map(l => l.trim()).filter(l => l !== '');
-        if (lines.length < 3) continue;
+        const mLines = block.split('\n').map(l => l.trim()).filter(l => l !== '');
+        if (mLines.length < 3) continue;
         
         let questionText = "";
         const options = {};
@@ -297,8 +309,8 @@ function parseTXTQuestions(text) {
         
         let questionLines = [];
         
-        for (let i = 0; i < lines.length; i++) {
-            const line = lines[i];
+        for (let i = 0; i < mLines.length; i++) {
+            const line = mLines[i];
             
             // Verificar domínio explicitamente configurado
             const domainMatch = line.match(domainRegex);
