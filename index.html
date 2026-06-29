@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWS Cloud Practice - Simulado Preparatório</title>
+    <meta name="description" content="Simulado preparatório estático para certificações AWS com análise de perfil em tempo real e sistema de memorização ativa (Geladeira).">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Glow Background Elements -->
+    <div class="glow-bg"></div>
+    <div class="glow-bg-secondary"></div>
+
+    <!-- Header Section -->
+    <header>
+        <div class="header-container">
+            <div class="logo-section">
+                <!-- AWS SVG logo representation -->
+                <svg width="40" height="24" viewBox="0 0 40 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M19.8 4.2C15.6 4.2 12.3 6.9 12.3 11C12.3 15.1 15.6 17.8 19.8 17.8C24 17.8 27.3 15.1 27.3 11C27.3 6.9 24 4.2 19.8 4.2ZM19.8 15.2C17.3 15.2 15.4 13.5 15.4 11C15.4 8.5 17.3 6.8 19.8 6.8C22.3 6.8 24.2 8.5 24.2 11C24.2 13.5 22.3 15.2 19.8 15.2Z" fill="#FF9900"/>
+                    <path d="M6.2 10.9C6.2 8.4 8.1 6.8 10.6 6.8C12.3 6.8 13.6 7.6 14.2 8.8L16.8 7.3C15.7 5.1 13.4 4.2 10.6 4.2C6.1 4.2 3.1 7.2 3.1 11C3.1 14.8 6.1 17.8 10.6 17.8C13.4 17.8 15.7 16.9 16.8 14.7L14.2 13.2C13.6 14.4 12.3 15.2 10.6 15.2C8.1 15.2 6.2 13.6 6.2 10.9Z" fill="#FF9900"/>
+                    <path d="M33.8 10.9C33.8 8.4 35.7 6.8 38.2 6.8C39.9 6.8 41.2 7.6 41.8 8.8L44.4 7.3C43.3 5.1 41 4.2 38.2 4.2C33.7 4.2 30.7 7.2 30.7 11C30.7 14.8 33.7 17.8 38.2 17.8C41 17.8 43.3 16.9 44.4 14.7L41.8 13.2C41.2 14.4 39.9 15.2 38.2 15.2C35.7 15.2 33.8 13.6 33.8 10.9Z" fill="#FF9900"/>
+                    <path d="M2.5 19.5C9.5 24 30.5 24 37.5 19.5" stroke="#FF9900" stroke-width="2.5" stroke-linecap="round"/>
+                    <path d="M34.5 18C35.5 19.5 38.5 21 38.5 21L36 17" stroke="#FF9900" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span class="logo-title">AWS Simulado</span>
+            </div>
+            
+            <div class="header-right">
+                <button class="btn-admin-toggle" id="btnAdminToggle" title="Modo Administrador (⚙️)">⚙️</button>
+                
+                <div class="user-status-widget" id="headerUserWidget" style="display: none;">
+                    <div class="user-avatar-placeholder" id="userAvatar">W</div>
+                    <div class="user-info-text">
+                        <div class="user-name" id="profileNameDisplay">Jogador</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main>
+        
+        <!-- SECTION 0: TELA DE BOAS-VINDAS / SELEÇÃO DE PERFIL -->
+        <section id="welcomeSection" class="app-section">
+            <div class="welcome-section-wrapper">
+                <div class="welcome-inner">
+                    <h1>AWS Cloud Practice Simulator</h1>
+                    <p class="subtitle">Selecione seu perfil ou crie um novo para iniciar os simulados</p>
+                    
+                    <div class="profile-select-grid" id="profileSelectGrid">
+                        <!-- Renderizado dinamicamente via Javascript -->
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- SECTION 1: DASHBOARD / SETUP (PLAYER VIEW) -->
+        <section id="dashboardSection" class="app-section">
+            
+            <div class="dashboard-grid">
+                
+                <!-- Main Dashboard Left Content -->
+                <div class="dashboard-left">
+                    <div class="profile-gradient-border" id="profileCardWrapper">
+                        <div class="glass-card welcome-card">
+                            <div class="welcome-card-content">
+                                <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem; flex-wrap: wrap;">
+                                    <h2 id="welcomeTitle">Olá, Estudante!</h2>
+                                    <span class="badge badge-amador" id="profileBadgeDisplay">Amador</span>
+                                </div>
+                                <p>Monitore seu progresso na trilha ativa e atinja o nível <strong>Profissional</strong>.</p>
+                            </div>
+                            <div class="welcome-card-bg-icon">AWS</div>
+                        </div>
+                    </div>
+
+                    <!-- Statistics Panel -->
+                    <div class="stats-row">
+                        <div class="stat-item">
+                            <div class="stat-value primary" id="statQuestionsCount">0</div>
+                            <div class="stat-label">Questões Ativas</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value success" id="statFridgeCount">0</div>
+                            <div class="stat-label">Na Geladeira</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value warning" id="statStreakCount">0</div>
+                            <div class="stat-label">Consecutivos</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value info" id="statBestScore">0%</div>
+                            <div class="stat-label">Melhor Nota</div>
+                        </div>
+                    </div>
+
+                    <!-- AWS Domains Performance Analysis (Condicional para SAA-C03) -->
+                    <div class="glass-card domains-card" id="domainsCard" style="display: none;">
+                        <h3>Desempenho por Domínio da Prova (SAA-C03)</h3>
+                        <div class="domain-progress-list">
+                            <!-- Domínio 1 -->
+                            <div class="domain-progress-item">
+                                <div class="domain-progress-header">
+                                    <span class="domain-name" title="Design Secure Architectures">
+                                        <span>D1</span> Design de Arquiteturas Seguras
+                                    </span>
+                                    <span class="domain-score-info">
+                                        <span id="domainPctD1">0%</span>
+                                        <span class="domain-weight">Peso: 30%</span>
+                                    </span>
+                                </div>
+                                <div class="domain-progress-track">
+                                    <div class="domain-progress-fill red" id="domainFillD1" style="width: 0%;"></div>
+                                </div>
+                                <span class="domain-recommendation red" id="domainRecD1">⚠️ Sem histórico de dados</span>
+                            </div>
+                            
+                            <!-- Domínio 2 -->
+                            <div class="domain-progress-item">
+                                <div class="domain-progress-header">
+                                    <span class="domain-name" title="Design Resilient Architectures">
+                                        <span>D2</span> Design de Arquiteturas Resilientes
+                                    </span>
+                                    <span class="domain-score-info">
+                                        <span id="domainPctD2">0%</span>
+                                        <span class="domain-weight">Peso: 26%</span>
+                                    </span>
+                                </div>
+                                <div class="domain-progress-track">
+                                    <div class="domain-progress-fill red" id="domainFillD2" style="width: 0%;"></div>
+                                </div>
+                                <span class="domain-recommendation red" id="domainRecD2">⚠️ Sem histórico de dados</span>
+                            </div>
+                            
+                            <!-- Domínio 3 -->
+                            <div class="domain-progress-item">
+                                <div class="domain-progress-header">
+                                    <span class="domain-name" title="Design High-Performing Architectures">
+                                        <span>D3</span> Arquiteturas de Alta Performance
+                                    </span>
+                                    <span class="domain-score-info">
+                                        <span id="domainPctD3">0%</span>
+                                        <span class="domain-weight">Peso: 24%</span>
+                                    </span>
+                                </div>
+                                <div class="domain-progress-track">
+                                    <div class="domain-progress-fill red" id="domainFillD3" style="width: 0%;"></div>
+                                </div>
+                                <span class="domain-recommendation red" id="domainRecD3">⚠️ Sem histórico de dados</span>
+                            </div>
+                            
+                            <!-- Domínio 4 -->
+                            <div class="domain-progress-item">
+                                <div class="domain-progress-header">
+                                    <span class="domain-name" title="Design Cost-Optimized Architectures">
+                                        <span>D4</span> Arquiteturas Otimizadas em Custo
+                                    </span>
+                                    <span class="domain-score-info">
+                                        <span id="domainPctD4">0%</span>
+                                        <span class="domain-weight">Peso: 20%</span>
+                                    </span>
+                                </div>
+                                <div class="domain-progress-track">
+                                    <div class="domain-progress-fill red" id="domainFillD4" style="width: 0%;"></div>
+                                </div>
+                                <span class="domain-recommendation red" id="domainRecD4">⚠️ Sem histórico de dados</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Streaks & Progress Information -->
+                    <div class="glass-card streak-card" id="streakCard" style="display: none;">
+                        <div class="streak-title">
+                            <span>Sequências para Promoção de Perfil (Trilha Ativa)</span>
+                            <span id="streakStatusLabel">Aguardando dados...</span>
+                        </div>
+                        <div class="streak-progress-box">
+                            <h4 style="font-size: 0.9rem; margin-bottom: 0.5rem;">Caminho para Intermediário (75% a 84% - 3 vezes consecutivas):</h4>
+                            <div class="streak-dots" id="intermediateStreakDots" style="margin-bottom: 1rem;">
+                                <div class="streak-dot">1</div>
+                                <div class="streak-dot">2</div>
+                                <div class="streak-dot">3</div>
+                            </div>
+                            
+                            <h4 style="font-size: 0.9rem; margin-bottom: 0.5rem;">Caminho para Profissional (85%+ - 5 vezes consecutivas):</h4>
+                            <div class="streak-dots" id="professionalStreakDots">
+                                <div class="streak-dot">1</div>
+                                <div class="streak-dot">2</div>
+                                <div class="streak-dot">3</div>
+                                <div class="streak-dot">4</div>
+                                <div class="streak-dot">5</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Missões e Medalhas -->
+                    <div class="glass-card missions-card" id="missionsCard">
+                        <h3>🏆 Painel de Missões e Medalhas</h3>
+                        <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.25rem;">
+                            Conclua desafios para desbloquear conquistas e evoluir como Arquiteto de Soluções AWS.
+                        </p>
+                        <div class="missions-list" id="dashboardMissionsList">
+                            <!-- Renderizado dinamicamente via Javascript -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dashboard Right Setup Sidebar -->
+                <div class="dashboard-right">
+                    <div class="glass-card setup-panel">
+                        <h3>Configurações do Jogador</h3>
+                        
+                        <!-- Identification -->
+                        <div class="input-group">
+                            <label for="userNameInput">Nome do Aluno</label>
+                            <input type="text" id="userNameInput" class="custom-input" placeholder="Digite seu nome (Ex: Wagner)">
+                        </div>
+
+                        <!-- Trilha de Certificação -->
+                        <div class="input-group">
+                            <label for="playerTrackSelect">Trilha de Certificação</label>
+                            <select id="playerTrackSelect" class="custom-input">
+                                <option value="practitioner">AWS Certified Cloud Practitioner (CLF-C02)</option>
+                                <option value="associate" selected>AWS Certified Solutions Architect - Associate (SAA-C03)</option>
+                                <option value="professional">AWS Certified Solutions Architect - Professional (SAP-C02)</option>
+                            </select>
+                        </div>
+
+                        <!-- Primary Actions Card -->
+                        <div style="margin-top: 0.5rem; display: flex; flex-direction: column; gap: 1rem;">
+                            <button class="btn btn-primary" id="btnStartSimulator" disabled>
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                                Iniciar Simulado (45 Questões)
+                            </button>
+                            <button class="btn btn-secondary" id="btnOpenFridge">
+                                ❄️ Ver Geladeira (Trilha Ativa)
+                            </button>
+                            <button class="btn btn-danger" id="btnLogout" style="margin-top: 0.25rem;">
+                                🚪 Sair do Perfil
+                            </button>
+                        </div>
+
+                        <!-- Export / Import Local Progress -->
+                        <div style="border-top: 1px solid var(--border-color); padding-top: 1.25rem; margin-top: 0.5rem; display: flex; gap: 0.5rem;">
+                            <button class="btn btn-secondary" id="btnExportProgress" style="font-size: 0.75rem; padding: 0.5rem;">
+                                📤 Exportar Progresso
+                            </button>
+                            <button class="btn btn-secondary" id="btnImportProgress" style="font-size: 0.75rem; padding: 0.5rem;">
+                                📥 Importar Progresso
+                            </button>
+                            <input type="file" id="importProgressFileInput" accept=".json" style="display: none;">
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- SECTION 1B: PAINEL ADMINISTRADOR (MANAGE QUESTIONS) -->
+        <section id="adminSection" class="app-section">
+            <div class="admin-mode-banner">
+                <span>🛡️ <strong>Modo Administrador Ativo</strong> — Gerenciamento de Bancos de Questões</span>
+                <button class="btn btn-secondary" id="btnExitAdmin" style="width: auto; padding: 0.4rem 1rem; font-size: 0.85rem;">Sair do Painel Admin</button>
+            </div>
+            
+            <div class="dashboard-grid">
+                <!-- Admin Left content: Configs and Database status -->
+                <div class="dashboard-left">
+                    <div class="glass-card">
+                        <h3>Status dos Bancos de Dados</h3>
+                        <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">
+                            Quantidade de questões cadastradas localmente no navegador por trilha de certificação.
+                        </p>
+                        
+                        <div class="admin-db-grid">
+                            <div class="admin-db-card">
+                                <div class="admin-db-title">Cloud Practitioner</div>
+                                <div class="admin-db-val" id="adminCountPractitioner">0 <span>questões</span></div>
+                            </div>
+                            <div class="admin-db-card">
+                                <div class="admin-db-title">Solutions Architect</div>
+                                <div class="admin-db-val" id="adminCountAssociate">0 <span>questões</span></div>
+                            </div>
+                            <div class="admin-db-card">
+                                <div class="admin-db-title">Architect Professional</div>
+                                <div class="admin-db-val" id="adminCountProfessional">0 <span>questões</span></div>
+                            </div>
+                        </div>
+                        
+                        <!-- Upload Section for selected track -->
+                        <div style="border-top: 1px solid var(--border-color); padding-top: 1.5rem; margin-top: 1rem;">
+                            <div class="input-group" style="margin-bottom: 1.25rem;">
+                                <label for="adminTrackSelect">Trilha Alvo para Importação / Ações</label>
+                                <select id="adminTrackSelect" class="custom-input">
+                                    <option value="practitioner">AWS Certified Cloud Practitioner (CLF-C02)</option>
+                                    <option value="associate" selected>AWS Certified Solutions Architect - Associate (SAA-C03)</option>
+                                    <option value="professional">AWS Certified Solutions Architect - Professional (SAP-C02)</option>
+                                </select>
+                            </div>
+                            
+                            <div class="input-group">
+                                <label>Carregar Nova Base (.txt)</label>
+                                <div class="file-upload-area" id="dropArea">
+                                    <div class="upload-icon">📥</div>
+                                    <p><strong>Arraste o arquivo .txt</strong> correspondente ou clique para selecionar</p>
+                                    <small>As questões importadas substituirão a base da trilha selecionada acima.</small>
+                                    <input type="file" id="fileInput" class="file-input" accept=".txt">
+                                </div>
+                                <div id="fileUploadStatus" style="font-size: 0.9rem; text-align: center; margin-top: 0.5rem; font-weight: 500;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Admin Right content: Formatting and actions -->
+                <div class="dashboard-right">
+                    <div class="glass-card setup-panel">
+                        <h3>Ações Rápidas</h3>
+                        
+                        <div>
+                            <button class="btn btn-secondary" id="btnAdminLoadSample" style="margin-bottom: 0.75rem;">
+                                📝 Inserir Questões de Exemplo (5)
+                            </button>
+                            <button class="btn btn-danger" id="btnAdminClearDB">
+                                🗑️ Esvaziar Banco da Trilha
+                            </button>
+                        </div>
+                        
+                        <div style="border-top: 1px solid var(--border-color); padding-top: 1rem; margin-top: 0.5rem;">
+                            <h4 style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.25rem; text-transform: uppercase;">Formato Esperado com Domínio:</h4>
+                            <div class="format-example">1. Pergunta da questão?
+A) Alternativa A
+B) Alternativa B
+C) Alternativa C
+D) Alternativa D
+Resposta: B
+Domínio: 1</div>
+                            <p style="font-size: 0.75rem; color: var(--text-muted); line-height: 1.4;">
+                                Caso o arquivo não possua a indicação de <strong>Domínio: X</strong>, a inteligência do parser detectará o domínio pelas palavras-chave da questão.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: SIMULATOR / QUIZ IN PROGRESS -->
+        <section id="quizSection" class="app-section">
+            <div class="simulator-layout">
+                <div class="glass-card">
+                    <!-- Quiz Header Details -->
+                    <div class="quiz-header">
+                        <div class="quiz-progress-info">
+                            Questão <span id="currentQuestionNumber">1</span> de <span id="totalQuestionsNumber">45</span>
+                        </div>
+                        <div class="timer-box" id="quizTimer">
+                            ⏱️ <span id="timerMinutes">00</span>:<span id="timerSeconds">00</span>
+                        </div>
+                    </div>
+
+                    <!-- Progress Bar -->
+                    <div class="progress-container">
+                        <div class="progress-bar" id="quizProgressBar"></div>
+                    </div>
+
+                    <!-- Question Block -->
+                    <div class="question-card">
+                        <!-- Domain Indicator during Exam -->
+                        <span class="question-domain-tag" id="questionDomainTag">Domínio 1 - Arquitetura Segura</span>
+                        
+                        <div class="question-text" id="questionText">Questão...</div>
+                        
+                        <!-- Options List -->
+                        <div class="options-list" id="optionsContainer">
+                            <!-- Dynamic alternatives -->
+                        </div>
+                    </div>
+
+                    <!-- Spaced Repetition Confidence Level -->
+                    <div class="confidence-section">
+                        <div class="confidence-title">Avalie o seu nível de certeza antes de verificar a resposta:</div>
+                        <div class="confidence-row" id="confidenceBtnGroup">
+                            <button class="confidence-btn" data-value="sei">Eu sei 🧠</button>
+                            <button class="confidence-btn" data-value="duvida">Tenho dúvida 🤷‍♂️</button>
+                            <button class="confidence-btn" data-value="nsei">Não sei 🎲</button>
+                        </div>
+                    </div>
+
+                    <!-- Navigation / Validation Action Buttons -->
+                    <div class="quiz-actions">
+                        <button class="btn btn-secondary" id="btnQuitQuiz" style="width: auto;">
+                            Sair do Simulado
+                        </button>
+                        <button class="btn btn-primary" id="btnVerifyAnswer" disabled>
+                            Exibir Resultado
+                        </button>
+                        <button class="btn btn-primary" id="btnNextQuestion" style="display: none;">
+                            Próxima Questão
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: SIMULATOR SUMMARY / RESULTS -->
+        <section id="resultsSection" class="app-section">
+            <div class="results-layout">
+                <div class="glass-card">
+                    <h2>Resultado do Simulado</h2>
+                    
+                    <!-- Circular Score Progress Animation -->
+                    <div class="score-circle-container">
+                        <svg class="score-svg" width="200" height="200">
+                            <circle class="score-circle-bg" cx="100" cy="100" r="90"></circle>
+                            <circle class="score-circle-progress" id="resultsCircleProgress" cx="100" cy="100" r="90"></circle>
+                        </svg>
+                        <div class="score-text">
+                            <div class="score-percentage" id="resultsPercentageText">0%</div>
+                            <div class="score-fraction" id="resultsFractionText">0 de 45</div>
+                        </div>
+                    </div>
+
+                    <!-- Performance Profile Feedback -->
+                    <h3 class="results-level-title" id="resultsLevelTitle">Amador</h3>
+                    <p class="results-level-desc" id="resultsLevelDesc">Você precisa praticar mais! Estude a base de questões e tente novamente.</p>
+
+                    <!-- Caixa de Medalhas Conquistadas -->
+                    <div class="congrats-mission-box" id="congratsMissionBox">
+                        <div class="congrats-mission-title">🎉 Novas Medalhas Desbloqueadas!</div>
+                        <div class="congrats-badges-flex" id="congratsBadgesFlex">
+                            <!-- Inserido dinamicamente via JS -->
+                        </div>
+                    </div>
+
+                    <!-- AWS Domains Performance in this Simulado -->
+                    <div class="glass-card domains-card" id="resultsDomainsCard" style="margin-bottom: 2rem; text-align: left; padding: 1.5rem;">
+                        <h4 style="margin-bottom: 1rem; font-size: 1rem;">Desempenho por Domínio da Prova neste Simulado (SAA-C03)</h4>
+                        <div class="domain-progress-list" id="resultsDomainList">
+                            <!-- Domínio 1 -->
+                            <div class="domain-progress-item">
+                                <div class="domain-progress-header">
+                                    <span class="domain-name"><span>D1</span> Design de Arquiteturas Seguras</span>
+                                    <span class="domain-score-info" id="resultsDomainPctD1">0%</span>
+                                </div>
+                                <div class="domain-progress-track">
+                                    <div class="domain-progress-fill" id="resultsDomainFillD1" style="width: 0%;"></div>
+                                </div>
+                            </div>
+                            <!-- Domínio 2 -->
+                            <div class="domain-progress-item">
+                                <div class="domain-progress-header">
+                                    <span class="domain-name"><span>D2</span> Design de Arquiteturas Resilientes</span>
+                                    <span class="domain-score-info" id="resultsDomainPctD2">0%</span>
+                                </div>
+                                <div class="domain-progress-track">
+                                    <div class="domain-progress-fill" id="resultsDomainFillD2" style="width: 0%;"></div>
+                                </div>
+                            </div>
+                            <!-- Domínio 3 -->
+                            <div class="domain-progress-item">
+                                <div class="domain-progress-header">
+                                    <span class="domain-name"><span>D3</span> Arquiteturas de Alta Performance</span>
+                                    <span class="domain-score-info" id="resultsDomainPctD3">0%</span>
+                                </div>
+                                <div class="domain-progress-track">
+                                    <div class="domain-progress-fill" id="resultsDomainFillD3" style="width: 0%;"></div>
+                                </div>
+                            </div>
+                            <!-- Domínio 4 -->
+                            <div class="domain-progress-item">
+                                <div class="domain-progress-header">
+                                    <span class="domain-name"><span>D4</span> Arquiteturas Otimizadas em Custo</span>
+                                    <span class="domain-score-info" id="resultsDomainPctD4">0%</span>
+                                </div>
+                                <div class="domain-progress-track">
+                                    <div class="domain-progress-fill" id="resultsDomainFillD4" style="width: 0%;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Score Metrics Summary Table -->
+                    <div class="results-summary-card">
+                        <div class="results-summary-row">
+                            <span class="label">Tempo Total:</span>
+                            <span class="val" id="resultsTimeText">00:00</span>
+                        </div>
+                        <div class="results-summary-row">
+                            <span class="label">Questões Enviadas para a Geladeira (Eu sei + Acerto):</span>
+                            <span class="val text-success" id="resultsSentToFridgeText">0</span>
+                        </div>
+                        <div class="results-summary-row">
+                            <span class="label">Chutes/Erros Mantidos no Pool:</span>
+                            <span class="val text-warning" id="resultsKeptInPoolText">0</span>
+                        </div>
+                        <div class="results-summary-row">
+                            <span class="label">Nível Atualizado:</span>
+                            <span class="val" id="resultsLevelBadgeWrapper">
+                                <span class="badge badge-amador" id="resultsBadgeDisplay">Amador</span>
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Post-Exam Action Controls -->
+                    <div class="start-actions" style="margin-top: 0;">
+                        <button class="btn btn-primary" id="btnRestartQuiz">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path></svg>
+                            Iniciar Outro Simulado (Mais 45 Questões)
+                        </button>
+                        <button class="btn btn-secondary" id="btnBackToDashboard">
+                            Voltar ao Painel Principal
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- PASSWORD AUTH MODAL (ADMIN) -->
+    <div class="modal-overlay" id="passwordModal">
+        <div class="modal-container password-modal-container">
+            <div class="modal-header">
+                <h3 class="modal-title">Autenticação do Administrador</h3>
+                <button class="modal-close" id="btnClosePasswordModal">×</button>
+            </div>
+            <div class="modal-body">
+                <p style="color: var(--text-muted); font-size: 0.9rem;">
+                    Digite a senha de administrador para gerenciar o banco de questões (Dica: <strong>admin123</strong>).
+                </p>
+                <div class="password-input-wrapper">
+                    <input type="password" id="adminPasswordInput" class="custom-input" placeholder="Digite a senha..." autofocus>
+                    <div id="passwordErrorMsg" style="color: var(--color-danger); font-size: 0.85rem; text-align: center; display: none;">Senha incorreta. Tente novamente!</div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="btnCancelPasswordModal" style="width: auto;">Cancelar</button>
+                <button class="btn btn-primary" id="btnSubmitPasswordModal" style="width: auto; padding-left: 2rem; padding-right: 2rem;">Entrar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- NEW PLAYER MODAL -->
+    <div class="modal-overlay" id="newPlayerModal">
+        <div class="modal-container password-modal-container">
+            <div class="modal-header">
+                <h3 class="modal-title">Criar Novo Jogador</h3>
+                <button class="modal-close" id="btnCloseNewPlayerModal">×</button>
+            </div>
+            <div class="modal-body">
+                <p style="color: var(--text-muted); font-size: 0.9rem;">
+                    Digite seu nome para criar um perfil independente de estudos e conquistas.
+                </p>
+                <div class="new-player-input-box">
+                    <input type="text" id="newPlayerNameInput" class="custom-input" placeholder="Digite seu nome (Ex: Wagner)...">
+                    <div id="newPlayerErrorMsg" style="color: var(--color-danger); font-size: 0.85rem; text-align: center; display: none; margin-top: 0.5rem;">Por favor, insira um nome válido.</div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="btnCancelNewPlayerModal" style="width: auto;">Cancelar</button>
+                <button class="btn btn-primary" id="btnSubmitNewPlayerModal" style="width: auto; padding-left: 2rem; padding-right: 2rem;">Criar e Entrar 🚀</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- GELADEIRA MODAL -->
+    <div class="modal-overlay" id="fridgeModal">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h3 class="modal-title">Questões na Geladeira (❄️)</h3>
+                <button class="modal-close" id="btnCloseFridge">×</button>
+            </div>
+            <div class="modal-body">
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1rem;">
+                    Estas questões foram marcadas como "Eu sei" e acertadas na trilha atual. Elas não aparecerão mais nos simulados.
+                </p>
+                
+                <!-- Search & Filters -->
+                <div class="input-group" style="margin-bottom: 1rem;">
+                    <input type="text" id="fridgeSearchInput" class="custom-input" placeholder="Pesquisar questões na geladeira...">
+                </div>
+
+                <div id="fridgeContainer">
+                    <!-- Dynamic rendering of fridge items here -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="btnResetFridge" style="background: rgba(239, 68, 68, 0.1); border-color: rgba(239, 68, 68, 0.3); color: var(--color-danger); width: auto;">
+                    ❄️ Derreter Tudo (Esvaziar Geladeira)
+                </button>
+                <button class="btn btn-primary" id="btnConfirmCloseFridge" style="width: auto; padding-left: 2rem; padding-right: 2rem;">
+                    Fechar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>AWS Cloud Practice Simulator - Feito para estudos de certificação AWS.</p>
+        <p style="margin-top: 0.5rem; opacity: 0.6;">Roda localmente sem conexão a servidores. Armazenamento local.</p>
+    </footer>
+
+    <!-- App Logic Script -->
+    <script src="app.js"></script>
+</body>
+</html>

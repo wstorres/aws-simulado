@@ -1,0 +1,15 @@
+1. Sob o modelo de responsabilidade compartilhada da AWS, qual das seguintes opções é uma responsabilidade da AWS?
+A) Configurar regras de firewall em instâncias EC2
+B) Gerenciar a infraestrutura física de data centers
+C) Criptografar dados em trânsito do cliente
+D) Atualizar o sistema operacional convidado (guest OS)
+Resposta: B
+Domínio: 1
+
+2. Qual serviço da AWS oferece alertas em tempo real para ajudar a otimizar a infraestrutura seguindo as melhores práticas?
+A) AWS Budgets
+B) AWS Trusted Advisor
+C) AWS CloudTrail
+D) Amazon Inspector
+Resposta: B
+Domínio: 1

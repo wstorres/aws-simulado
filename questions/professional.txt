@@ -1,0 +1,15 @@
+1. Uma empresa deseja consolidar o faturamento de várias contas da AWS e obter descontos por volume. Qual serviço ou recurso deve ser usado?
+A) AWS Cost Explorer
+B) AWS Organizations
+C) AWS Budgets
+D) AWS Control Tower
+Resposta: B
+Domínio: 1
+
+2. Qual serviço permite a criação de conexões privadas dedicadas entre a rede local de uma empresa e a AWS?
+A) AWS Client VPN
+B) AWS Direct Connect
+C) AWS Transit Gateway
+D) Amazon Route 53
+Resposta: B
+Domínio: 1
