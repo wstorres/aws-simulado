@@ -224,6 +224,65 @@ function parseTXTQuestions(text) {
         block = block.trim();
         if (!block) continue;
         
+        // --- PARSER PARA QUESTÕES EM LINHA ÚNICA (INLINE) ---
+        const hasOptionsInline = /\bA[\)\.\-\s]+/.test(block) && /(?:resposta|gabarito|answer|correct|correta)\s*[:\-]?\s*[A-E]/i.test(block);
+        if (hasOptionsInline) {
+            let answer = "";
+            let domain = null;
+            
+            const ansM = block.match(/(?:resposta|gabarito|answer|correct|correta)\s*[:\-]?\s*([A-E](?:\s*(?:e|and|ou|or)\s*[A-E])?)/i);
+            if (ansM) answer = ansM[1].toUpperCase().trim();
+            
+            const domM = block.match(/(?:dom[ií]nio|domain|d)\s*[:\-]?\s*([1-4])/i);
+            if (domM) domain = parseInt(domM[1]);
+            
+            let cleanLine = block.replace(/(?:resposta|gabarito|answer|correct|correta)\s*[:\-]?\s*([A-E](?:\s*(?:e|and|ou|or)\s*[A-E])?)/i, '')
+                                 .replace(/(?:dom[ií]nio|domain|d)\s*[:\-]?\s*([1-4])/i, '')
+                                 .trim();
+            
+            let questionText = "";
+            const options = {};
+            
+            const match5 = cleanLine.match(/^(.*?)\bA[\)\.\-\s]+(.*?)\bB[\)\.\-\s]+(.*?)\bC[\)\.\-\s]+(.*?)\bD[\)\.\-\s]+(.*?)\bE[\)\.\-\s]+(.*?)$/i);
+            const match4 = cleanLine.match(/^(.*?)\bA[\)\.\-\s]+(.*?)\bB[\)\.\-\s]+(.*?)\bC[\)\.\-\s]+(.*?)\bD[\)\.\-\s]+(.*?)$/i);
+            
+            if (match5) {
+                questionText = match5[1].trim();
+                options["A"] = match5[2].trim();
+                options["B"] = match5[3].trim();
+                options["C"] = match5[4].trim();
+                options["D"] = match5[5].trim();
+                options["E"] = match5[6].trim();
+            } else if (match4) {
+                questionText = match4[1].trim();
+                options["A"] = match4[2].trim();
+                options["B"] = match4[3].trim();
+                options["C"] = match4[4].trim();
+                options["D"] = match4[5].trim();
+            }
+            
+            questionText = questionText.replace(/^(\d+[\.\-\)]\s*)/, '')
+                                       .replace(/^(Quest[aã]o\s+\d+[\.\-\s:]*)/i, '');
+            
+            if (domain === null) {
+                const optionsString = Object.values(options).join(" ");
+                domain = autoDetectDomain(questionText, optionsString);
+            }
+            
+            if (questionText && Object.keys(options).length >= 2 && answer) {
+                const qId = generateQuestionId(questionText);
+                parsedQuestions.push({
+                    id: qId,
+                    text: questionText,
+                    options: options,
+                    answer: answer,
+                    domain: domain
+                });
+                continue; // Processado com sucesso como inline!
+            }
+        }
+        
+        // --- PARSER TRADICIONAL PARA MÚLTIPLAS LINHAS ---
         const lines = block.split('\n').map(l => l.trim()).filter(l => l !== '');
         if (lines.length < 3) continue;
         
