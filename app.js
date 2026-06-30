@@ -235,154 +235,166 @@ function generateQuestionId(text) {
 function parseTXTQuestions(text) {
     const normalizedText = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
     const parsedQuestions = [];
+    const lines = normalizedText.split('\n').map(l => l.trim());
     
-    // 1. Tentar ler como questões por linha (caso do formato inline)
-    const lines = normalizedText.split('\n').map(l => l.trim()).filter(l => l !== '');
-    let inlineCount = 0;
+    let currentMultilineBlock = [];
     
     for (let line of lines) {
-        // Enforce that option A must be followed by a parenthesis, dot or dash (not just a space)
-        const hasOptionsInline = /\bA[\)\.\-]\s+/.test(line) && /(?:resposta|gabarito|answer|correct|correta)\s*[:\-]?\s*[A-E]/i.test(line);
-        if (hasOptionsInline) {
-            let answer = "";
-            let domain = null;
-            
-            const ansM = line.match(/(?:resposta|gabarito|answer|correct|correta)\s*[:\-]?\s*([A-E](?:\s*(?:e|and|ou|or)\s*[A-E])?)/i);
-            if (ansM) answer = ansM[1].toUpperCase().trim();
-            
-            const domM = line.match(/(?:dom[ií]nio|domain|d)\s*[:\-]?\s*([1-4])/i);
-            if (domM) domain = parseInt(domM[1]);
-            
-            let cleanLine = line.replace(/(?:resposta|gabarito|answer|correct|correta)\s*[:\-]?\s*([A-E](?:\s*(?:e|and|ou|or)\s*[A-E])?)/i, '')
-                                 .replace(/(?:dom[ií]nio|domain|d)\s*[:\-]?\s*([1-4])/i, '')
-                                 .trim();
-            
-            let questionText = "";
-            const options = {};
-            
-            // Match option markers followed by parenthesis, dot or dash
-            const match5 = cleanLine.match(/^(.*?)\bA[\)\.\-]+(.*?)\bB[\)\.\-]+(.*?)\bC[\)\.\-]+(.*?)\bD[\)\.\-]+(.*?)\bE[\)\.\-]+(.*?)$/i);
-            const match4 = cleanLine.match(/^(.*?)\bA[\)\.\-]+(.*?)\bB[\)\.\-]+(.*?)\bC[\)\.\-]+(.*?)\bD[\)\.\-]+(.*?)$/i);
-            
-            if (match5) {
-                questionText = match5[1].trim();
-                options["A"] = match5[2].trim();
-                options["B"] = match5[3].trim();
-                options["C"] = match5[4].trim();
-                options["D"] = match5[5].trim();
-                options["E"] = match5[6].trim();
-            } else if (match4) {
-                questionText = match4[1].trim();
-                options["A"] = match4[2].trim();
-                options["B"] = match4[3].trim();
-                options["C"] = match4[4].trim();
-                options["D"] = match4[5].trim();
+        if (line === '') {
+            if (currentMultilineBlock.length > 0) {
+                const q = parseMultilineBlock(currentMultilineBlock);
+                if (q) parsedQuestions.push(q);
+                currentMultilineBlock = [];
+            }
+            continue;
+        }
+        
+        // Verificar se a linha é uma questão inline
+        const isInline = /\bA[\)\.\-]\s+/.test(line) && /(?:resposta|gabarito|answer|correct|correta)\s*[:\-]?\s*[A-E]/i.test(line);
+        if (isInline) {
+            if (currentMultilineBlock.length > 0) {
+                const q = parseMultilineBlock(currentMultilineBlock);
+                if (q) parsedQuestions.push(q);
+                currentMultilineBlock = [];
             }
             
-            questionText = questionText.replace(/^(\d+[\.\-\)]\s*)/, '')
-                                       .replace(/^(Quest[aã]o\s+\d+[\.\-\s:]*)/i, '');
+            const qInline = parseInlineLine(line);
+            if (qInline) parsedQuestions.push(qInline);
+        } else {
+            currentMultilineBlock.push(line);
             
-            if (domain === null) {
-                const optionsString = Object.values(options).join(" ");
-                domain = autoDetectDomain(questionText, optionsString);
-            }
-            
-            if (questionText && Object.keys(options).length >= 2 && answer) {
-                const qId = generateQuestionId(questionText);
-                parsedQuestions.push({
-                    id: qId,
-                    text: questionText,
-                    options: options,
-                    answer: answer,
-                    domain: domain
-                });
-                inlineCount++;
+            // Se contiver Domínio ou Resposta na linha de um bloco de alternativas, tenta fechar se for a última linha
+            const containsDomain = /(?:dom[ií]nio|domain|d)\s*[:\-]?\s*([1-4])/i.test(line);
+            if (containsDomain) {
+                const q = parseMultilineBlock(currentMultilineBlock);
+                if (q) parsedQuestions.push(q);
+                currentMultilineBlock = [];
             }
         }
     }
     
-    // Se conseguimos ler questões inline com sucesso, retornamos a lista diretamente!
-    if (inlineCount > 0) {
-        return parsedQuestions;
+    if (currentMultilineBlock.length > 0) {
+        const q = parseMultilineBlock(currentMultilineBlock);
+        if (q) parsedQuestions.push(q);
     }
     
-    // 2. Se não houver questões inline, usa o parser tradicional multilinhas
-    const questionSplitRegex = /(?:^|\n)(?=\d+[\.\-\)]|\bQuest[aã]o\s+\d+|\bQuestion\s+\d+)/i;
-    const blocks = normalizedText.split(questionSplitRegex);
-    
-    for (let block of blocks) {
-        block = block.trim();
-        if (!block) continue;
-        
-        const mLines = block.split('\n').map(l => l.trim()).filter(l => l !== '');
-        if (mLines.length < 3) continue;
-        
-        let questionText = "";
-        const options = {};
-        let answer = "";
-        let domain = null;
-        
-        const optionRegex = /^([A-E])[\)\.\-\s]+(.*)$/i;
-        const answerRegex = /(?:resposta|gabarito|answer|correct|correta)\s*[:\-]?\s*([A-E])/i;
-        const domainRegex = /(?:dom[ií]nio|domain|d)\s*[:\-]?\s*([1-4])/i;
-        
-        let questionLines = [];
-        
-        for (let i = 0; i < mLines.length; i++) {
-            const line = mLines[i];
-            
-            // Verificar domínio explicitamente configurado
-            const domainMatch = line.match(domainRegex);
-            if (domainMatch) {
-                domain = parseInt(domainMatch[1]);
-                continue;
-            }
-            
-            // Verificar gabarito
-            const answerMatch = line.match(answerRegex);
-            if (answerMatch) {
-                answer = answerMatch[1].toUpperCase();
-                continue;
-            }
-            
-            // Verificar alternativa
-            const optionMatch = line.match(optionRegex);
-            if (optionMatch) {
-                const optLetter = optionMatch[1].toUpperCase();
-                const optText = optionMatch[2].trim();
-                options[optLetter] = optText;
-                continue;
-            }
-            
-            // Texto da questão
-            if (Object.keys(options).length === 0) {
-                questionLines.push(line);
-            }
-        }
-        
-        let fullQuestionText = questionLines.join(' ');
-        fullQuestionText = fullQuestionText.replace(/^(\d+[\.\-\)]\s*)/, '');
-        fullQuestionText = fullQuestionText.replace(/^(Quest[aã]o\s+\d+[\.\-\s:]*)/i, '');
-        
-        // Se não encontrou o domínio no txt, autodetecta
-        if (domain === null) {
-            const optionsString = Object.values(options).join(" ");
-            domain = autoDetectDomain(fullQuestionText, optionsString);
-        }
-        
-        if (fullQuestionText && Object.keys(options).length >= 2 && answer) {
-            const qId = generateQuestionId(fullQuestionText);
-            parsedQuestions.push({
-                id: qId,
-                text: fullQuestionText,
-                options: options,
-                answer: answer,
-                domain: domain
-            });
-        }
-    }
-    
+    console.log(`Parsed total of ${parsedQuestions.length} questions.`);
     return parsedQuestions;
+}
+
+function parseInlineLine(line) {
+    let answer = "";
+    let domain = null;
+    
+    const ansM = line.match(/(?:resposta|gabarito|answer|correct|correta)\s*[:\-]?\s*([A-E](?:\s*(?:e|and|ou|or)\s*[A-E])?)/i);
+    if (ansM) answer = ansM[1].toUpperCase().trim();
+    
+    const domM = line.match(/(?:dom[ií]nio|domain|d)\s*[:\-]?\s*([1-4])/i);
+    if (domM) domain = parseInt(domM[1]);
+    
+    let cleanLine = line.replace(/(?:resposta|gabarito|answer|correct|correta)\s*[:\-]?\s*([A-E](?:\s*(?:e|and|ou|or)\s*[A-E])?)/i, '')
+                         .replace(/(?:dom[ií]nio|domain|d)\s*[:\-]?\s*([1-4])/i, '')
+                         .trim();
+    
+    let questionText = "";
+    const options = {};
+    
+    const match5 = cleanLine.match(/^(.*?)\bA[\)\.\-]+(.*?)\bB[\)\.\-]+(.*?)\bC[\)\.\-]+(.*?)\bD[\)\.\-]+(.*?)\bE[\)\.\-]+(.*?)$/i);
+    const match4 = cleanLine.match(/^(.*?)\bA[\)\.\-]+(.*?)\bB[\)\.\-]+(.*?)\bC[\)\.\-]+(.*?)\bD[\)\.\-]+(.*?)$/i);
+    
+    if (match5) {
+        questionText = match5[1].trim();
+        options["A"] = match5[2].trim();
+        options["B"] = match5[3].trim();
+        options["C"] = match5[4].trim();
+        options["D"] = match5[5].trim();
+        options["E"] = match5[6].trim();
+    } else if (match4) {
+        questionText = match4[1].trim();
+        options["A"] = match4[2].trim();
+        options["B"] = match4[3].trim();
+        options["C"] = match4[4].trim();
+        options["D"] = match4[5].trim();
+    }
+    
+    questionText = questionText.replace(/^(\d+[\.\-\)]\s*)/, '')
+                               .replace(/^(Quest[aã]o\s+\d+[\.\-\s:]*)/i, '');
+    
+    if (domain === null) {
+        const optionsString = Object.values(options).join(" ");
+        domain = autoDetectDomain(questionText, optionsString);
+    }
+    
+    if (questionText && Object.keys(options).length >= 2 && answer) {
+        return {
+            id: generateQuestionId(questionText),
+            text: questionText,
+            options: options,
+            answer: answer,
+            domain: domain
+        };
+    }
+    return null;
+}
+
+function parseMultilineBlock(blockLines) {
+    if (blockLines.length < 3) return null;
+    
+    let questionText = "";
+    const options = {};
+    let answer = "";
+    let domain = null;
+    
+    const optionRegex = /^([A-E])[\)\.\-\s]+(.*)$/i;
+    const answerRegex = /(?:resposta|gabarito|answer|correct|correta)\s*[:\-]?\s*([A-E](?:\s*(?:e|and|ou|or)\s*[A-E])?)/i;
+    const domainRegex = /(?:dom[ií]nio|domain|d)\s*[:\-]?\s*([1-4])/i;
+    
+    let questionTextParts = [];
+    
+    for (let line of blockLines) {
+        const domainMatch = line.match(domainRegex);
+        if (domainMatch) {
+            domain = parseInt(domainMatch[1]);
+            continue;
+        }
+        
+        const answerMatch = line.match(answerRegex);
+        if (answerMatch) {
+            answer = answerMatch[1].toUpperCase().trim();
+            continue;
+        }
+        
+        const optionMatch = line.match(optionRegex);
+        if (optionMatch) {
+            const letter = optionMatch[1].toUpperCase();
+            options[letter] = optionMatch[2].trim();
+            continue;
+        }
+        
+        if (Object.keys(options).length === 0) {
+            questionTextParts.push(line);
+        }
+    }
+    
+    questionText = questionTextParts.join(" ").trim();
+    questionText = questionText.replace(/^(\d+[\.\-\)]\s*)/, '')
+                               .replace(/^(Quest[aã]o\s+\d+[\.\-\s:]*)/i, '');
+                               
+    if (domain === null) {
+        const optionsString = Object.values(options).join(" ");
+        domain = autoDetectDomain(questionText, optionsString);
+    }
+    
+    if (questionText && Object.keys(options).length >= 2 && answer) {
+        return {
+            id: generateQuestionId(questionText),
+            text: questionText,
+            options: options,
+            answer: answer,
+            domain: domain
+        };
+    }
+    return null;
 }
 
 
