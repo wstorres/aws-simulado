@@ -345,9 +345,9 @@ function parseMultilineBlock(blockLines) {
     let answer = "";
     let domain = null;
     
-    const optionRegex = /^([A-E])[\)\.\-\s]+(.*)$/i;
-    const answerRegex = /(?:resposta|gabarito|answer|correct|correta)\s*[:\-]?\s*([A-E](?:\s*(?:e|and|ou|or)\s*[A-E])?)/i;
-    const domainRegex = /(?:dom[ií]nio|domain|d)\s*[:\-]?\s*([1-4])/i;
+    const optionRegex = /^([A-E])[\)\.\-]\s+(.*)$/i;
+    const answerRegex = /^(?:resposta|gabarito|answer|correct|correta)\s*[:\-]?\s*([A-E](?:\s*(?:e|and|ou|or)\s*[A-E])?)$/i;
+    const domainRegex = /^(?:dom[ií]nio|domain|d)\s*[:\-]?\s*([1-4])$/i;
     
     let questionTextParts = [];
     
@@ -782,15 +782,6 @@ function showWelcomeScreen() {
             card.addEventListener("click", () => loginPlayer(name));
             grid.appendChild(card);
         });
-        
-        const newCard = document.createElement("div");
-        newCard.className = "profile-select-card profile-new-card";
-        newCard.innerHTML = `
-            <div class="profile-new-icon">➕</div>
-            <div class="profile-select-name" style="margin-top: 0.5rem;">Novo Jogador</div>
-        `;
-        newCard.addEventListener("click", openNewPlayerModal);
-        grid.appendChild(newCard);
     }
     
     showSection("welcomeSection");
@@ -820,6 +811,14 @@ function submitCreatePlayer() {
     if (!nameInput) return;
     const name = nameInput.value.trim();
     const errorMsg = document.getElementById("newPlayerErrorMsg");
+    
+    if (!state.tempEmailPending) {
+        if (errorMsg) {
+            errorMsg.innerText = "Erro: E-mail de acesso não identificado. Faça login usando o e-mail primeiro.";
+            errorMsg.style.display = "block";
+        }
+        return;
+    }
     
     if (!name) {
         if (errorMsg) {
