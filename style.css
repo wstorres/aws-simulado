@@ -789,8 +789,12 @@ main {
 
 /* Simulator View styling */
 .simulator-layout {
-    max-width: 800px;
+    max-width: 1100px;
     margin: 0 auto;
+}
+
+.simulator-layout .glass-card {
+    padding: 1.25rem 1.5rem;
 }
 
 .quiz-header {
@@ -849,7 +853,7 @@ main {
 }
 
 .question-text {
-    font-size: 1.15rem;
+    font-size: 1.05rem;
     color: var(--text-highlight);
     font-weight: 600;
     margin-bottom: 0.75rem;
@@ -859,18 +863,18 @@ main {
 .options-list {
     display: flex;
     flex-direction: column;
-    gap: 0.6rem;
+    gap: 0.5rem;
 }
 
 .option-item {
     background: rgba(255, 255, 255, 0.02);
     border: 1.5px solid var(--border-color);
     border-radius: var(--border-radius-sm);
-    padding: 0.8rem 1rem;
+    padding: 0.6rem 0.8rem;
     cursor: pointer;
     display: flex;
     align-items: flex-start;
-    gap: 1rem;
+    gap: 0.75rem;
     transition: all var(--transition-fast);
 }
 
@@ -886,8 +890,8 @@ main {
 }
 
 .option-marker {
-    width: 24px;
-    height: 24px;
+    width: 22px;
+    height: 22px;
     border-radius: 50%;
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid var(--border-color);
@@ -895,7 +899,7 @@ main {
     align-items: center;
     justify-content: center;
     font-weight: 700;
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     flex-shrink: 0;
     color: var(--text-muted);
 }
@@ -907,7 +911,7 @@ main {
 }
 
 .option-content {
-    font-size: 1rem;
+    font-size: 0.92rem;
     color: var(--text-main);
 }
 
@@ -1713,12 +1717,23 @@ footer a:hover {
 .game-helps-row {
     display: flex;
     justify-content: center;
-    gap: 1.5rem;
+    gap: 1rem;
     margin-bottom: 1rem;
-    padding: 0.5rem;
+    padding: 0.4rem 0.8rem;
     background: rgba(255, 255, 255, 0.02);
     border-radius: var(--border-radius-md);
     border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.game-helps-label {
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+    align-self: center;
+    margin-right: 0.5rem;
 }
 
 .game-help-btn {
