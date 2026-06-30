@@ -1905,3 +1905,105 @@ footer a:hover {
     }
 }
 
+/* --- GAMIFICAÇÃO: BADGES / MEDALHAS --- */
+.header-badge {
+    display: inline-block;
+    margin-left: 0.35rem;
+    filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.4));
+    cursor: help;
+    transition: transform var(--transition-fast);
+    font-size: 1.1rem;
+    vertical-align: middle;
+}
+
+.header-badge:hover {
+    transform: scale(1.3) translateY(-1px);
+}
+
+.welcome-badges-shelf {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-top: 1rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.dashboard-badge-medal {
+    position: relative;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1.5px solid var(--border-color);
+    cursor: help;
+    transition: all var(--transition-fast);
+    box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.05);
+}
+
+.dashboard-badge-medal:hover {
+    transform: translateY(-3px) scale(1.05);
+    border-color: var(--border-hover);
+}
+
+.dashboard-badge-medal.locked {
+    background: rgba(0, 0, 0, 0.3);
+    border-color: rgba(255, 255, 255, 0.05);
+    opacity: 0.35;
+    filter: grayscale(1);
+}
+
+.dashboard-badge-medal.locked::before {
+    content: "🔒";
+    position: absolute;
+    font-size: 0.65rem;
+    bottom: -3px;
+    right: -3px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 50%;
+    width: 14px;
+    height: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Brilho e Cores dos Badges */
+.dashboard-badge-medal.badge-blue {
+    border-color: #3b82f6;
+    box-shadow: 0 0 8px rgba(59, 130, 246, 0.3);
+}
+.dashboard-badge-medal.badge-orange {
+    border-color: #f97316;
+    box-shadow: 0 0 8px rgba(249, 115, 22, 0.3);
+}
+.dashboard-badge-medal.badge-purple {
+    border-color: #a855f7;
+    box-shadow: 0 0 8px rgba(168, 85, 247, 0.3);
+}
+.dashboard-badge-medal.badge-cyan {
+    border-color: #06b6d4;
+    box-shadow: 0 0 8px rgba(6, 182, 212, 0.3);
+}
+.dashboard-badge-medal.badge-gold {
+    border-color: #eab308;
+    box-shadow: 0 0 8px rgba(234, 179, 8, 0.3);
+}
+.dashboard-badge-medal.badge-green {
+    border-color: #10b981;
+    box-shadow: 0 0 8px rgba(16, 185, 129, 0.3);
+}
+.dashboard-badge-medal.badge-red {
+    border-color: #ef4444;
+    box-shadow: 0 0 8px rgba(239, 68, 68, 0.3);
+}
+.dashboard-badge-medal.badge-yellow {
+    border-color: #fbbf24;
+    box-shadow: 0 0 8px rgba(251, 191, 36, 0.3);
+}
+

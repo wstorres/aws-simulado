@@ -153,6 +153,7 @@ const state = {
     userAnswers: [],
     isAnswerVerified: false,
     skippedQuestionIds: new Set(),
+    currentQuizHelpsUsed: false,
     
     // Ajudas de Jogo (Show do Milhão)
     gameHelps: {
@@ -709,6 +710,15 @@ const MISSIONS_DB = {
         badgeName: "Cloud Speedrunner",
         badgeClass: "badge-red",
         target: 1
+    },
+    M8: {
+        id: "M8",
+        name: "Mestre da Nuvem Pura",
+        desc: "Conclua um simulado sem usar nenhuma ajuda (Pular, Dica ou 50/50) com nota ≥ 85%.",
+        badge: "🎓",
+        badgeName: "Cloud Purist",
+        badgeClass: "badge-yellow",
+        target: 1
     }
 };
 
@@ -752,6 +762,7 @@ function evaluateMissions() {
     });
     
     const hasSpeedrunPassed = allHistory.some(h => h.percentage >= 70 && h.timeSeconds < 1200);
+    const hasPuristPassed = allHistory.some(h => h.percentage >= 85 && h.helpsUsed === false);
 
     if (!state.missions) state.missions = {};
     for (let mKey in MISSIONS_DB) {
@@ -767,6 +778,7 @@ function evaluateMissions() {
     updateMissionProgress("M5", totalSims);
     updateMissionProgress("M6", state.consecutiveSeiCount || 0);
     updateMissionProgress("M7", hasSpeedrunPassed ? 1 : 0);
+    updateMissionProgress("M8", hasPuristPassed ? 1 : 0);
     
     function updateMissionProgress(mId, currentProgress) {
         const m = state.missions[mId];
@@ -937,10 +949,50 @@ function updateUI() {
     // Nome do aluno
     setVal("userNameInput", state.userName);
     setText("welcomeTitle",       `Olá, ${state.userName}!`);
-    setText("profileNameDisplay", state.userName);
+    
+    // Nome com badges no cabeçalho
+    const profileNameDisplay = document.getElementById("profileNameDisplay");
+    if (profileNameDisplay) {
+        profileNameDisplay.innerHTML = "";
+        const nameSpan = document.createElement("span");
+        nameSpan.innerText = state.userName;
+        profileNameDisplay.appendChild(nameSpan);
+        
+        if (state.missions) {
+            for (let mId in MISSIONS_DB) {
+                const mDb = MISSIONS_DB[mId];
+                const mState = state.missions[mId];
+                if (mState && mState.completed) {
+                    const badgeSpan = document.createElement("span");
+                    badgeSpan.className = "header-badge";
+                    badgeSpan.innerText = mDb.badge;
+                    badgeSpan.title = `${mDb.badgeName}: ${mDb.name} (${mDb.desc})`;
+                    profileNameDisplay.appendChild(badgeSpan);
+                }
+            }
+        }
+    }
     
     const initial = state.userName.trim().charAt(0).toUpperCase() || "U";
     setText("userAvatar", initial);
+    
+    // Prateleira de Badges no Welcome Card
+    const shelf = document.getElementById("welcomeBadgesShelf");
+    if (shelf) {
+        shelf.innerHTML = "";
+        if (!state.missions) state.missions = {};
+        for (let mId in MISSIONS_DB) {
+            const mDb = MISSIONS_DB[mId];
+            const mState = state.missions[mId] || { completed: false };
+            const medalDiv = document.createElement("div");
+            medalDiv.className = `dashboard-badge-medal ${mState.completed ? mDb.badgeClass : "locked"}`;
+            medalDiv.innerText = mDb.badge;
+            medalDiv.title = mState.completed 
+                ? `${mDb.badgeName}: ${mDb.name} - ${mDb.desc} (Concluído em ${mState.completedAt || 'N/A'})` 
+                : `Bloqueado: ${mDb.name} - ${mDb.desc}`;
+            shelf.appendChild(medalDiv);
+        }
+    }
     
     // Nível atual (Badge) na trilha ativa
     const badge = document.getElementById("profileBadgeDisplay");
@@ -1174,6 +1226,7 @@ function generateSimulator() {
     state.selectedOption = null;
     state.selectedConfidence = null;
     state.isAnswerVerified = false;
+    state.currentQuizHelpsUsed = false;
     
     // Resetar ajudas de jogo (Show do Milhão)
     state.gameHelps = {
@@ -1412,7 +1465,8 @@ function finishQuiz() {
         total: totalQuestions,
         percentage: pct,
         timeSeconds: state.timerSeconds,
-        domains: domStats
+        domains: domStats,
+        helpsUsed: state.currentQuizHelpsUsed || false
     });
     
     // --- LÓGICA DE PROMOÇÃO / REBAIXAMENTO ---
@@ -1934,6 +1988,7 @@ function handleGameHelpSkip() {
     }
     
     state.gameHelps.skip--;
+    state.currentQuizHelpsUsed = true;
     
     const currentQ = state.currentQuiz[state.currentQuestionIndex];
     if (state.skippedQuestionIds) {
@@ -1952,6 +2007,7 @@ function handleGameHelpHint() {
     if (!question) return;
     
     state.gameHelps.hint--;
+    state.currentQuizHelpsUsed = true;
     
     const hint = getSmartHint(question);
     const hintBox = document.getElementById("questionHintBox");
@@ -1978,6 +2034,7 @@ function handleGameHelpEliminate() {
     if (incorrectOptions.length === 0) return;
     
     state.gameHelps.eliminate--;
+    state.currentQuizHelpsUsed = true;
     
     const shuffled = incorrectOptions.sort(() => 0.5 - Math.random());
     const toEliminate = shuffled.slice(0, 2);
