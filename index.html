@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AWS Cloud Practice - Simulado Preparatório</title>
     <meta name="description" content="Simulado preparatório estático para certificações AWS com análise de perfil em tempo real e sistema de memorização ativa (Geladeira).">
-    <link rel="stylesheet" href="style.css?v=5.0">
+    <link rel="stylesheet" href="style.css?v=6.0">
 </head>
 <body>
     <!-- Glow Background Elements -->
@@ -367,69 +367,81 @@ Domínio: 1</div>
                     </div>
 
                     <!-- Gamification Helps (Show do Milhão style) -->
-                    <div class="game-helps-row">
-                        <span class="game-helps-label">Ajudas:</span>
-                        <button class="game-help-btn" id="helpSkipBtn" title="Pula esta questão e a envia para o final do simulado (Máx 3)">
-                            <span class="help-icon">⏭️</span>
-                            <span class="help-text">Pular</span>
-                            <span class="help-badge" id="helpSkipBadge">3</span>
-                        </button>
-                        <button class="game-help-btn" id="helpHintBtn" title="Fornece uma dica conceitual sobre a resposta correta (Máx 3)">
-                            <span class="help-icon">💡</span>
-                            <span class="help-text">Dica</span>
-                            <span class="help-badge" id="helpHintBadge">3</span>
-                        </button>
-                        <button class="game-help-btn" id="helpEliminateBtn" title="Elimina duas alternativas incorretas (50/50) (Máx 1)">
-                            <span class="help-icon">❌</span>
-                            <span class="help-text">50/50</span>
-                            <span class="help-badge" id="helpEliminateBadge">1</span>
-                        </button>
-                    </div>
-
-                    <!-- Question Block -->
-                    <div class="question-card">
-                        <!-- Domain Indicator during Exam -->
-                        <span class="question-domain-tag" id="questionDomainTag">Domínio 1 - Arquitetura Segura</span>
-                        
-                        <div class="question-text" id="questionText">Questão...</div>
-
-                        <!-- Dynamic Smart Hint Box -->
-                        <div class="question-hint-card" id="questionHintBox" style="display: none;">
-                            <div class="hint-header">
-                                <span class="hint-icon">💡</span>
-                                <strong>DICA DO ARQUITETO</strong>
+                    <div class="quiz-grid-container">
+                        <!-- Left Column: Question Details -->
+                        <div class="quiz-left-col">
+                            <div class="game-helps-row">
+                                <span class="game-helps-label">Ajudas:</span>
+                                <button class="game-help-btn" id="helpSkipBtn" title="Pula esta questão e a envia para o final do simulado (Máx 3)">
+                                    <span class="help-icon">⏭️</span>
+                                    <span class="help-text">Pular</span>
+                                    <span class="help-badge" id="helpSkipBadge">3</span>
+                                </button>
+                                <button class="game-help-btn" id="helpHintBtn" title="Fornece uma dica conceitual sobre a resposta correta (Máx 3)">
+                                    <span class="help-icon">💡</span>
+                                    <span class="help-text">Dica</span>
+                                    <span class="help-badge" id="helpHintBadge">3</span>
+                                </button>
+                                <button class="game-help-btn" id="helpEliminateBtn" title="Elimina duas alternativas incorretas (50/50) (Máx 1)">
+                                    <span class="help-icon">❌</span>
+                                    <span class="help-text">50/50</span>
+                                    <span class="help-badge" id="helpEliminateBadge">1</span>
+                                </button>
                             </div>
-                            <div class="hint-body" id="questionHintText"></div>
-                        </div>
-                        
-                        <!-- Options List -->
-                        <div class="options-list" id="optionsContainer">
-                            <!-- Dynamic alternatives -->
-                        </div>
-                    </div>
 
-                    <!-- Spaced Repetition Confidence Level -->
-                    <div class="confidence-section">
-                        <div class="confidence-title">Avalie o seu nível de certeza antes de verificar a resposta:</div>
-                        <div class="confidence-row" id="confidenceBtnGroup">
-                            <button class="confidence-btn" data-value="sei">Eu sei 🧠</button>
-                            <button class="confidence-btn" data-value="duvida">Tenho dúvida 🤷‍♂️</button>
-                            <button class="confidence-btn" data-value="nsei">Não sei 🎲</button>
-                        </div>
-                    </div>
+                            <!-- Question Block -->
+                            <div class="question-card">
+                                <div class="tags-row" style="display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.5rem;">
+                                    <!-- Domain Indicator during Exam -->
+                                    <span class="question-domain-tag" id="questionDomainTag">Domínio 1 - Arquitetura Segura</span>
+                                    <!-- Skipped Tag -->
+                                    <span class="skipped-tag" id="questionSkippedTag" style="display: none;">Questão Pulada ⏭️</span>
+                                </div>
+                                
+                                <div class="question-text" id="questionText">Questão...</div>
 
-                    <!-- Navigation / Validation Action Buttons -->
-                    <div class="quiz-actions">
-                        <button class="btn btn-secondary" id="btnQuitQuiz" style="width: auto;">
-                            Sair do Simulado
-                        </button>
-                        <button class="btn btn-primary" id="btnVerifyAnswer" disabled>
-                            Exibir Resultado
-                        </button>
-                        <button class="btn btn-primary" id="btnNextQuestion" style="display: none;">
-                            Próxima Questão
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-                        </button>
+                                <!-- Dynamic Smart Hint Box -->
+                                <div class="question-hint-card" id="questionHintBox" style="display: none;">
+                                    <div class="hint-header">
+                                        <span class="hint-icon">💡</span>
+                                        <strong>DICA DO ARQUITETO</strong>
+                                    </div>
+                                    <div class="hint-body" id="questionHintText"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Column: Alternatives and actions -->
+                        <div class="quiz-right-col">
+                            <!-- Options List -->
+                            <div class="options-list" id="optionsContainer">
+                                <!-- Dynamic alternatives -->
+                            </div>
+
+                            <!-- Spaced Repetition Confidence Level -->
+                            <div class="confidence-section">
+                                <div class="confidence-title">Avalie o seu nível de certeza antes de verificar a resposta:</div>
+                                <div class="confidence-row" id="confidenceBtnGroup">
+                                    <button class="confidence-btn" data-value="sei">Eu sei 🧠</button>
+                                    <button class="confidence-btn" data-value="duvida">Tenho dúvida 🤷‍♂️</button>
+                                    <button class="confidence-btn" data-value="nsei">Não sei 🎲</button>
+                                </div>
+                            </div>
+
+                            <!-- Navigation / Validation Action Buttons -->
+                            <div class="quiz-actions">
+                                <button class="btn btn-secondary" id="btnQuitQuiz" style="width: auto;">
+                                    Sair do Simulado
+                                </button>
+                                <button class="btn btn-primary" id="btnVerifyAnswer" disabled>
+                                    Exibir Resultado
+                                </button>
+                                <button class="btn btn-primary" id="btnNextQuestion" style="display: none;">
+                                    Próxima Questão
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -635,6 +647,6 @@ Domínio: 1</div>
     </footer>
 
     <!-- App Logic Script -->
-    <script src="app.js?v=5.0"></script>
+    <script src="app.js?v=6.0"></script>
 </body>
 </html>

@@ -1857,3 +1857,51 @@ footer a:hover {
     }
 }
 
+/* --- DUAS COLUNAS NO SIMULADOR --- */
+.quiz-grid-container {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 1.5rem;
+    align-items: start;
+}
+
+@media (max-width: 900px) {
+    .quiz-grid-container {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+}
+
+.quiz-left-col, .quiz-right-col {
+    display: flex;
+    flex-direction: column;
+}
+
+.quiz-right-col {
+    gap: 0.5rem;
+}
+
+/* Skipped Tag indicator */
+.skipped-tag {
+    font-size: 0.7rem;
+    font-weight: 800;
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+    background: rgba(245, 158, 11, 0.15);
+    color: var(--color-warning);
+    border: 1px solid rgba(245, 158, 11, 0.3);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: inline-block;
+    animation: pulseGlow 2s infinite alternate;
+}
+
+@keyframes pulseGlow {
+    0% {
+        box-shadow: 0 0 4px rgba(245, 158, 11, 0.2);
+    }
+    100% {
+        box-shadow: 0 0 10px rgba(245, 158, 11, 0.5);
+    }
+}
+

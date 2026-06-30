@@ -152,6 +152,7 @@ const state = {
     selectedConfidence: null,
     userAnswers: [],
     isAnswerVerified: false,
+    skippedQuestionIds: new Set(),
     
     // Ajudas de Jogo (Show do Milhão)
     gameHelps: {
@@ -1181,6 +1182,11 @@ function generateSimulator() {
         eliminate: 1
     };
     state.eliminatedOptions.clear();
+    if (state.skippedQuestionIds) {
+        state.skippedQuestionIds.clear();
+    } else {
+        state.skippedQuestionIds = new Set();
+    }
     
     renderQuestion();
     startTimer();
@@ -1218,6 +1224,16 @@ function renderQuestion() {
         domTag.innerText = domainNames[question.domain] || `Domínio ${question.domain}`;
     } else {
         domTag.style.display = "none";
+    }
+    
+    // Tag de Questão Pulada
+    const skippedTag = document.getElementById("questionSkippedTag");
+    if (skippedTag) {
+        if (state.skippedQuestionIds && state.skippedQuestionIds.has(question.id)) {
+            skippedTag.style.display = "inline-block";
+        } else {
+            skippedTag.style.display = "none";
+        }
     }
     
     document.getElementById("questionText").innerText = `${state.currentQuestionIndex + 1}. ${question.text}`;
@@ -1288,6 +1304,9 @@ function checkVerifyButtonEnable() {
 function verifyAnswer() {
     state.isAnswerVerified = true;
     const question = state.currentQuiz[state.currentQuestionIndex];
+    if (state.skippedQuestionIds) {
+        state.skippedQuestionIds.delete(question.id);
+    }
     const correctLetter = question.answer.toUpperCase();
     const selectedLetter = state.selectedOption;
     const isCorrect = (selectedLetter === correctLetter);
@@ -1917,6 +1936,9 @@ function handleGameHelpSkip() {
     state.gameHelps.skip--;
     
     const currentQ = state.currentQuiz[state.currentQuestionIndex];
+    if (state.skippedQuestionIds) {
+        state.skippedQuestionIds.add(currentQ.id);
+    }
     state.currentQuiz.splice(state.currentQuestionIndex, 1);
     state.currentQuiz.push(currentQ);
     
