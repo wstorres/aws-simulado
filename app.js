@@ -3,7 +3,7 @@
 // 1. Crie um Token de Acesso Pessoal (PAT) clássico no seu GitHub com a permissão "repo" ativa.
 // 2. Digite o token de forma INVERTIDA (de trás para frente) na variável abaixo.
 //    Exemplo: se seu token for "ghp_123456", digite "654321_phg".
-const REVERSED_GITHUB_TOKEN = ""; 
+const REVERSED_GITHUB_TOKEN = "Z3fRG47goMJ6h2RvJExzl2M0cd3KEvIJxASs_phg"; 
 const GITHUB_REPO = "wstorres/aws-simulado"; 
 
 // --- CONFIGURAÇÃO DO BANCO DE DADOS LOCAL (IndexedDB) ---
