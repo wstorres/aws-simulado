@@ -231,6 +231,38 @@ function generateQuestionId(text) {
     return "q_" + Math.abs(hash).toString(36);
 }
 
+// --- CONVERSOR DE QUESTÕES EM JSON ---
+function convertJSONQuestions(jsonData) {
+    if (!Array.isArray(jsonData)) return [];
+    
+    return jsonData.map((q, index) => {
+        const text = q.enunciado || q.text || "";
+        const options = {};
+        const rawOpts = q.opcoes || q.options;
+        if (rawOpts) {
+            for (let letter in rawOpts) {
+                options[letter.toUpperCase().trim()] = String(rawOpts[letter]).trim();
+            }
+        }
+        
+        let answer = String(q.resposta || q.answer || "").toUpperCase().trim();
+        let domain = q.dominio !== undefined ? parseInt(q.dominio) : (q.domain !== undefined ? parseInt(q.domain) : null);
+        
+        if (domain === null) {
+            const optionsString = Object.values(options).join(" ");
+            domain = autoDetectDomain(text, optionsString);
+        }
+        
+        return {
+            id: generateQuestionId(text) || `q_json_${index}`,
+            text: text,
+            options: options,
+            answer: answer,
+            domain: domain
+        };
+    }).filter(q => q.text && Object.keys(q.options).length >= 2 && q.answer);
+}
+
 // --- PARSER DE TEXTO ATUALIZADO COM DOMÍNIOS ---
 function parseTXTQuestions(text) {
     const normalizedText = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
