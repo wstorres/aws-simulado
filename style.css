@@ -1830,6 +1830,33 @@ footer a:hover {
     line-height: 1.4;
 }
 
+/* Smart Explanation Card Style */
+.question-explanation-card {
+    background: rgba(16, 185, 129, 0.05);
+    border: 1px dashed var(--color-success);
+    border-radius: var(--border-radius-sm);
+    padding: 1rem;
+    margin: 1.25rem 0;
+    animation: slideDownFade 0.4s ease-out forwards;
+}
+
+.explanation-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--color-success);
+    font-size: 0.85rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    letter-spacing: 0.5px;
+}
+
+.explanation-body {
+    font-size: 0.95rem;
+    color: var(--text-main);
+    line-height: 1.5;
+}
+
 /* Eliminate Option Style */
 .option-item.eliminated {
     opacity: 0.25;

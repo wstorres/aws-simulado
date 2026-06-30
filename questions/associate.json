@@ -1,0 +1,653 @@
+[
+  {
+    "numero": 1,
+    "enunciado": "Uma empresa tem um site hospedado na AWS atrás de um Application Load Balancer (ALB) configurado para lidar com HTTP e HTTPS separadamente. A empresa quer encaminhar todas as solicitações para usar HTTPS. O que um arquiteto deve fazer?",
+    "opcoes": {
+      "A": "Atualizar a network ACL do ALB para aceitar apenas tráfego HTTPS.",
+      "B": "Criar uma regra que substitui HTTP na URL por HTTPS.",
+      "C": "Criar uma listener rule no ALB para redirecionar tráfego HTTP para HTTPS.",
+      "D": "Substituir o ALB por um Network Load Balancer com Server Name Indication (SNI)."
+    },
+    "resposta": "C",
+    "dominio": 1,
+    "explicacao": "O ALB suporta regras de redirecionamento nativas no listener, permitindo enviar tráfego da porta 80 para a 443 sem necessidade de alterar o código da aplicação."
+  },
+  {
+    "numero": 2,
+    "enunciado": "Uma empresa quer mover uma aplicação multicamadas para a AWS. As transações são perdidas quando uma camada sobrecarrega. Qual solução moderniza a aplicação e é mais eficiente operacionalmente?",
+    "opcoes": {
+      "A": "Usar Amazon API Gateway com AWS Lambda e Amazon SQS como camada de comunicação.",
+      "B": "Usar Amazon CloudWatch para analisar métricas e aumentar o tamanho das instâncias EC2.",
+      "C": "Usar Amazon SNS para lidar com mensagens entre servidores EC2 em um Auto Scaling Group.",
+      "D": "Usar Amazon SQS entre servidores EC2 em um Auto Scaling Group escalando via CloudWatch."
+    },
+    "resposta": "A",
+    "dominio": 2,
+    "explicacao": "A arquitetura Serverless (Lambda + API Gateway) reduz a carga operacional ao eliminar o gerenciamento de servidores, enquanto o SQS desacopla as camadas, evitando perda de dados."
+  },
+  {
+    "numero": 3,
+    "enunciado": "Uma aplicação de três camadas está na AWS. A empresa quer usar um firewall virtual de terceiros (Marketplace) para inspecionar todo o tráfego antes de chegar aos servidores. Qual a menor sobrecarga operacional?",
+    "opcoes": {
+      "A": "Criar um Network Load Balancer na public subnet.",
+      "B": "Criar um Application Load Balancer na public subnet.",
+      "C": "Implantar um Transit Gateway na VPC de inspeção.",
+      "D": "Implantar um Gateway Load Balancer na VPC de inspeção com Gateway Load Balancer Endpoint."
+    },
+    "resposta": "D",
+    "dominio": 1,
+    "explicacao": "O Gateway Load Balancer foi projetado especificamente para escalar e gerenciar appliances de rede de terceiros de forma transparente na arquitetura."
+  },
+  {
+    "numero": 4,
+    "enunciado": "Arquivos de log JSON estão em um bucket S3. Precisa-se realizar consultas SQL sob demanda com o mínimo de alteração na arquitetura.",
+    "opcoes": {
+      "A": "Usar Amazon Redshift.",
+      "B": "Usar Amazon CloudWatch Logs.",
+      "C": "Usar Amazon Athena diretamente no S3.",
+      "D": "Usar AWS Glue com Amazon EMR."
+    },
+    "resposta": "C",
+    "dominio": 3,
+    "explicacao": "O Amazon Athena permite consultar dados diretamente no S3 usando SQL padrão, sem provisionar servidores ou bancos de dados."
+  },
+  {
+    "numero": 5,
+    "enunciado": "Um HTTP app está atrás de um NLB com Auto Scaling Group. O NLB não detecta erros HTTP, exigindo intervenção manual. Como melhorar a disponibilidade sem código customizado?",
+    "opcoes": {
+      "A": "Habilitar Health Checks HTTP no NLB.",
+      "B": "Adicionar um cron job nas instâncias para reiniciar a aplicação.",
+      "C": "Substituir NLB por Application Load Balancer e habilitar Health Checks HTTP.",
+      "D": "Criar alarme CloudWatch na métrica UnhealthyHostCount do NLB."
+    },
+    "resposta": "C",
+    "dominio": 2,
+    "explicacao": "O NLB opera na camada 4. O Application Load Balancer (ALB) é o componente de camada 7 que permite health checks baseados em respostas HTTP da aplicação."
+  },
+  {
+    "numero": 6,
+    "enunciado": "Uma empresa global quer reduzir a latência de dados estáticos (no S3) e dinâmicos (no ALB). O que um arquiteto deve fazer?",
+    "opcoes": {
+      "A": "Criar uma distribuição Amazon CloudFront para S3 e ALB.",
+      "B": "CloudFront para ALB e AWS Global Accelerator para S3.",
+      "C": "CloudFront para S3 e usar AWS Global Accelerator para o ALB e a distribuição CloudFront.",
+      "D": "Criar dois domínios distintos, um para cada serviço."
+    },
+    "resposta": "C",
+    "dominio": 3,
+    "explicacao": "O Global Accelerator otimiza o caminho da rede para o tráfego do usuário, enquanto o CloudFront acelera o conteúdo estático no edge."
+  },
+  {
+    "numero": 7,
+    "enunciado": "Um banco RDS Single-AZ tem desempenho inadequado quando um script de análise roda. Qual a solução com menor sobrecarga?",
+    "opcoes": {
+      "A": "Mudar para Multi-AZ.",
+      "B": "Criar uma Read Replica e apontar o script para ela.",
+      "C": "Exportar manualmente o banco ao fim do dia.",
+      "D": "Usar Amazon ElastiCache para as consultas do script."
+    },
+    "resposta": "B",
+    "dominio": 3,
+    "explicacao": "Read Replicas permitem descarregar operações de leitura intensivas da instância principal, melhorando o desempenho da aplicação."
+  },
+  {
+    "numero": 8,
+    "enunciado": "Usuários fazem upload de fotos para instâncias EC2, que as redimensionam. O processo está lento. O que fazer para reduzir o acoplamento? (Escolha duas)",
+    "opcoes": {
+      "A": "S3 Glacier.",
+      "B": "Upload direto para S3.",
+      "C": "URLs pré-assinadas (Presigned URLs) para upload direto ao S3.",
+      "D": "S3 Event Notifications disparando AWS Lambda.",
+      "E": "EventBridge agendado."
+    },
+    "resposta": "C e D",
+    "dominio": 3,
+    "explicacao": "URLs pré-assinadas removem a carga de rede do servidor web, e Lambda com gatilho S3 automatiza o redimensionamento de forma assíncrona."
+  },
+  {
+    "numero": 9,
+    "enunciado": "Arquitetura para rastrear bicicletas com dados em tempo real, acessíveis por REST API. Qual a melhor opção?",
+    "opcoes": {
+      "A": "Amazon Athena.",
+      "B": "API Gateway com Lambda.",
+      "C": "Amazon QuickSight.",
+      "D": "API Gateway com Kinesis Data Analytics."
+    },
+    "resposta": "D",
+    "dominio": 3,
+    "explicacao": "Kinesis é a ferramenta ideal para processamento de stream (dados de localização), com integração nativa para servir dados analíticos."
+  },
+  {
+    "numero": 10,
+    "enunciado": "Servidores web precisam acessar um banco RDS com rotação frequente de credenciais. Qual a solução segura?",
+    "opcoes": {
+      "A": "AWS Secrets Manager com rotação nativa.",
+      "B": "AWS Systems Manager OpsCenter.",
+      "C": "Bucket S3 seguro.",
+      "D": "Arquivos criptografados via KMS no sistema de arquivos."
+    },
+    "resposta": "A",
+    "dominio": 1,
+    "explicacao": "O Secrets Manager gerencia credenciais de bancos de dados com rotação automática, eliminando a necessidade de gerenciar senhas manualmente."
+  },
+  {
+    "numero": 11,
+    "enunciado": "Um banco de dados de alta performance exige IOPS consistentes. O volume EBS atual não atende. Qual volume escolher?",
+    "opcoes": {
+      "A": "General Purpose SSD (gp3).",
+      "B": "Provisioned IOPS SSD (io2).",
+      "C": "Throughput Optimized HDD (st1).",
+      "D": "Cold HDD (sc1)."
+    },
+    "resposta": "B",
+    "dominio": 3,
+    "explicacao": "Para cargas de trabalho críticas que requerem IOPS provisionados de alta consistência, o volume io2 é a escolha recomendada."
+  },
+  {
+    "numero": 12,
+    "enunciado": "Empresa precisa armazenar backups de longo prazo que podem ser recuperados em até 12 horas. Qual o mais econômico?",
+    "opcoes": {
+      "A": "S3 Standard.",
+      "B": "S3 Standard-IA.",
+      "C": "S3 Glacier Instant Retrieval.",
+      "D": "S3 Glacier Deep Archive."
+    },
+    "resposta": "D",
+    "dominio": 4,
+    "explicacao": "O Glacier Deep Archive é a classe de armazenamento mais barata para dados que não são acessados com frequência e aceitam tempo de recuperação mais longo."
+  },
+  {
+    "numero": 13,
+    "enunciado": "Como isolar tráfego de banco de dados para que apenas instâncias web específicas acessem?",
+    "opcoes": {
+      "A": "Usar Security Group do banco permitindo o Security Group da instância web.",
+      "B": "Usar CIDR block do banco no Security Group da web.",
+      "C": "Usar Network ACLs com endereços IP específicos.",
+      "D": "Usar AWS WAF."
+    },
+    "resposta": "A",
+    "dominio": 1,
+    "explicacao": "A prática recomendada para segurança de rede no EC2 é referenciar o Security Group da instância de origem no Security Group da instância de destino."
+  },
+  {
+    "numero": 14,
+    "enunciado": "Uma aplicação exige armazenamento de arquivos compartilhado acessível por múltiplas instâncias EC2 em diferentes AZs. Qual o serviço?",
+    "opcoes": {
+      "A": "Amazon EBS.",
+      "B": "Amazon EFS.",
+      "C": "Amazon S3.",
+      "D": "Instance Store."
+    },
+    "resposta": "B",
+    "dominio": 2,
+    "explicacao": "O Amazon EFS (Elastic File System) é um sistema de arquivos NFS gerenciado que suporta acesso simultâneo de múltiplos recursos em várias AZs."
+  },
+  {
+    "numero": 15,
+    "enunciado": "Necessidade de realizar análise em larga escala de logs sem gerenciar infraestrutura. Qual a melhor combinação?",
+    "opcoes": {
+      "A": "S3 + EMR.",
+      "B": "S3 + Athena.",
+      "C": "RDS + EC2.",
+      "D": "DynamoDB + Lambda."
+    },
+    "resposta": "B",
+    "dominio": 3,
+    "explicacao": "Athena permite consultar dados em S3 com alta escalabilidade sem a sobrecarga de gerenciar clusters EMR."
+  },
+  {
+    "numero": 16,
+    "enunciado": "Qual estratégia minimiza o custo de instâncias EC2 para uma carga de trabalho batch que pode ser interrompida?",
+    "opcoes": {
+      "A": "On-Demand Instances.",
+      "B": "Reserved Instances.",
+      "C": "Spot Instances.",
+      "D": "Dedicated Hosts."
+    },
+    "resposta": "C",
+    "dominio": 4,
+    "explicacao": "Spot Instances oferecem preços significativamente mais baixos para cargas flexíveis, desde que a aplicação lide com a possibilidade de interrupção."
+  },
+  {
+    "numero": 17,
+    "enunciado": "Como garantir que um bucket S3 privado não seja acessível publicamente mesmo se a configuração for alterada?",
+    "opcoes": {
+      "A": "Usar AWS IAM Policy.",
+      "B": "Usar S3 Block Public Access.",
+      "C": "Usar Bucket Policy.",
+      "D": "Usar ACLs."
+    },
+    "resposta": "B",
+    "dominio": 1,
+    "explicacao": "O S3 Block Public Access é uma camada de controle que garante que as configurações de acesso público não sejam sobrepostas por erros de configuração."
+  },
+  {
+    "numero": 18,
+    "enunciado": "Qual serviço é ideal para proteção contra ataques DDoS em aplicações rodando em um ALB?",
+    "opcoes": {
+      "A": "AWS WAF.",
+      "B": "AWS Shield Standard.",
+      "C": "AWS Shield Advanced.",
+      "D": "AWS Firewall Manager."
+    },
+    "resposta": "C",
+    "dominio": 1,
+    "explicacao": "O AWS Shield Advanced fornece proteção robusta contra DDoS em camadas 3, 4 e 7 para recursos como ALBs e CloudFront."
+  },
+  {
+    "numero": 19,
+    "enunciado": "Qual a finalidade de um Cluster Placement Group no EC2?",
+    "opcoes": {
+      "A": "Distribuir instâncias em diferentes racks.",
+      "B": "Colocar instâncias próximas para baixa latência de rede.",
+      "C": "Espalhar instâncias por múltiplos data centers.",
+      "D": "Reduzir custos de licenciamento."
+    },
+    "resposta": "B",
+    "dominio": 3,
+    "explicacao": "Cluster placement groups são ideais para aplicações que exigem baixa latência de rede e alta throughput entre instâncias."
+  },
+  {
+    "numero": 20,
+    "enunciado": "Empresa precisa de uma base de dados NoSQL com latência de milissegundos para aplicações globais. Qual o serviço?",
+    "opcoes": {
+      "A": "Amazon RDS.",
+      "B": "Amazon Aurora.",
+      "C": "Amazon DynamoDB.",
+      "D": "Amazon Redshift."
+    },
+    "resposta": "C",
+    "dominio": 3,
+    "explicacao": "DynamoDB é o banco de dados chave-valor NoSQL projetado para alta performance e latência consistente em qualquer escala."
+  },
+  {
+    "numero": 21,
+    "enunciado": "Para migrar um banco de dados local com pouco tempo de inatividade, qual serviço utilizar?",
+    "opcoes": {
+      "A": "AWS Snowball.",
+      "B": "AWS Database Migration Service (DMS).",
+      "C": "AWS Storage Gateway.",
+      "D": "AWS Backup."
+    },
+    "resposta": "B",
+    "dominio": 2,
+    "explicacao": "O AWS DMS facilita a migração de bancos de dados para a AWS com tempo de inatividade mínimo."
+  },
+  {
+    "numero": 22,
+    "enunciado": "Como configurar o Route 53 para direcionar tráfego para regiões diferentes baseado na proximidade do usuário?",
+    "opcoes": {
+      "A": "Failover Routing.",
+      "B": "Geolocation Routing.",
+      "C": "Latency Routing.",
+      "D": "Geoproximity Routing."
+    },
+    "resposta": "C",
+    "dominio": 2,
+    "explicacao": "O roteamento por latência (Latency Routing) envia o usuário para a região AWS onde a latência de resposta é a mais baixa."
+  },
+  {
+    "numero": 23,
+    "enunciado": "Qual é a melhor forma de criptografar dados em repouso no EBS?",
+    "opcoes": {
+      "A": "Usar criptografia na aplicação.",
+      "B": "Habilitar a criptografia EBS nas configurações do volume.",
+      "C": "Criptografar o SO antes de criar o snapshot.",
+      "D": "Usar instâncias dedicadas."
+    },
+    "resposta": "B",
+    "dominio": 1,
+    "explicacao": "O EBS oferece criptografia nativa integrada ao AWS KMS, sendo a forma mais simples e eficiente de garantir dados em repouso."
+  },
+  {
+    "numero": 24,
+    "enunciado": "Empresa precisa de uma aplicação web altamente disponível. Qual a arquitetura mínima?",
+    "opcoes": {
+      "A": "Instância única em uma AZ.",
+      "B": "Duas instâncias em uma AZ.",
+      "C": "Instâncias espalhadas por duas ou mais AZs.",
+      "D": "Instâncias em uma região diferente."
+    },
+    "resposta": "C",
+    "dominio": 2,
+    "explicacao": "Alta disponibilidade na AWS requer que os recursos estejam distribuídos em múltiplas zonas de disponibilidade (AZs) para tolerância a falhas."
+  },
+  {
+    "numero": 25,
+    "enunciado": "Qual serviço ajuda a automatizar a infraestrutura como código?",
+    "opcoes": {
+      "A": "AWS Config.",
+      "B": "AWS CloudFormation.",
+      "C": "AWS Systems Manager.",
+      "D": "AWS Inspector."
+    },
+    "resposta": "B",
+    "dominio": 1,
+    "explicacao": "O AWS CloudFormation permite modelar e gerenciar recursos da AWS por meio de templates (IaC)."
+  },
+  {
+    "numero": 26,
+    "enunciado": "Qual a finalidade do AWS Organizations?",
+    "opcoes": {
+      "A": "Gerenciar permissões de usuários individuais.",
+      "B": "Consolidar contas AWS e gerenciar faturamento centralizado.",
+      "C": "Otimizar o desempenho de bancos de dados.",
+      "D": "Monitorar a rede VPC."
+    },
+    "resposta": "B",
+    "dominio": 4,
+    "explicacao": "O Organizations centraliza o gerenciamento de contas, incluindo políticas (SCPs) e faturamento unificado."
+  },
+  {
+    "numero": 27,
+    "enunciado": "Para armazenamento de arquivos temporários de altíssima performance para computação paralela, o que escolher?",
+    "opcoes": {
+      "A": "EBS st1.",
+      "B": "Instance Store.",
+      "C": "S3 Standard.",
+      "D": "EFS."
+    },
+    "resposta": "B",
+    "dominio": 3,
+    "explicacao": "Instance Store (armazenamento efêmero) oferece I/O de baixíssima latência, ideal para buffers temporários de alta performance."
+  },
+  {
+    "numero": 28,
+    "enunciado": "O que o AWS Config monitora?",
+    "opcoes": {
+      "A": "Custos de recursos.",
+      "B": "Configurações de recursos e histórico de alterações.",
+      "C": "Performance da rede.",
+      "D": "Ataques cibernéticos."
+    },
+    "resposta": "B",
+    "dominio": 1,
+    "explicacao": "O AWS Config fornece um inventário e histórico de todas as alterações na configuração dos recursos AWS."
+  },
+  {
+    "numero": 29,
+    "enunciado": "Qual o benefício de usar o AWS Lambda para processamento de imagem?",
+    "opcoes": {
+      "A": "Custo fixo mensal.",
+      "B": "Escalabilidade automática e pagamento pelo uso.",
+      "C": "Performance superior a instâncias EC2.",
+      "D": "Segurança de rede melhorada."
+    },
+    "resposta": "B",
+    "dominio": 3,
+    "explicacao": "Lambda escala automaticamente de acordo com o volume de requisições, cobrando apenas pelo tempo de execução."
+  },
+  {
+    "numero": 30,
+    "enunciado": "Para uma aplicação de banco de dados SQL que requer alta disponibilidade em múltiplas regiões, o que utilizar?",
+    "opcoes": {
+      "A": "RDS Multi-AZ.",
+      "B": "Aurora Global Database.",
+      "C": "DynamoDB.",
+      "D": "S3."
+    },
+    "resposta": "B",
+    "dominio": 2,
+    "explicacao": "Aurora Global Database foi projetado para aplicações que exigem leitura rápida em várias regiões e failover global."
+  },
+  {
+    "numero": 31,
+    "enunciado": "Empresa precisa de uma solução de backup para dados que residem em um servidor local e na AWS. O que usar?",
+    "opcoes": {
+      "A": "AWS Storage Gateway.",
+      "B": "AWS Transfer Family.",
+      "C": "AWS DataSync.",
+      "D": "AWS Backup."
+    },
+    "resposta": "D",
+    "dominio": 2,
+    "explicacao": "O AWS Backup centraliza e automatiza a proteção de dados em diversos serviços da AWS e ambientes híbridos."
+  },
+  {
+    "numero": 32,
+    "enunciado": "Qual o serviço de identidade que permite que usuários acessem a AWS com suas credenciais corporativas existentes?",
+    "opcoes": {
+      "A": "AWS IAM User.",
+      "B": "AWS IAM Role.",
+      "C": "AWS IAM Identity Center (Single Sign-On).",
+      "D": "AWS Directory Service."
+    },
+    "resposta": "C",
+    "dominio": 1,
+    "explicacao": "O Identity Center permite integração com provedores de identidade corporativos para acesso federado."
+  },
+  {
+    "numero": 33,
+    "enunciado": "Para otimizar custos de S3 para objetos com padrões de acesso desconhecidos, qual a melhor classe?",
+    "opcoes": {
+      "A": "S3 Standard.",
+      "B": "S3 Intelligent-Tiering.",
+      "C": "S3 One Zone-IA.",
+      "D": "S3 Glacier."
+    },
+    "resposta": "B",
+    "dominio": 4,
+    "explicacao": "O S3 Intelligent-Tiering move automaticamente os objetos entre camadas de acesso conforme o comportamento de uso, otimizando o custo sem esforço manual."
+  },
+  {
+    "numero": 34,
+    "enunciado": "Como um arquiteto pode restringir o acesso a uma API no API Gateway a usuários autenticados?",
+    "opcoes": {
+      "A": "Usar IAM Policy.",
+      "B": "Usar Amazon Cognito User Pools.",
+      "C": "Usar AWS WAF.",
+      "D": "Usar Security Groups."
+    },
+    "resposta": "B",
+    "dominio": 1,
+    "explicacao": "O Cognito User Pools é o serviço gerenciado para autenticação e gerenciamento de usuários em aplicações web e móveis."
+  },
+  {
+    "numero": 35,
+    "enunciado": "Qual a função do AWS Direct Connect?",
+    "opcoes": {
+      "A": "Criptografar tráfego na internet.",
+      "B": "Fornecer uma conexão de rede dedicada entre o data center local e a AWS.",
+      "C": "Criar um tunel VPN pela internet.",
+      "D": "Acelerar tráfego web."
+    },
+    "resposta": "B",
+    "dominio": 3,
+    "explicacao": "Direct Connect oferece conexão privada, consistente e dedicada, evitando a oscilação da internet pública."
+  },
+  {
+    "numero": 36,
+    "enunciado": "Empresa precisa calcular os custos mensais de seus recursos AWS. Qual a ferramenta?",
+    "opcoes": {
+      "A": "AWS Trusted Advisor.",
+      "B": "AWS Cost Explorer.",
+      "C": "AWS Budgets.",
+      "D": "AWS Price List API."
+    },
+    "resposta": "B",
+    "dominio": 4,
+    "explicacao": "O Cost Explorer é a ferramenta principal para visualizar e analisar os gastos com recursos AWS ao longo do tempo."
+  },
+  {
+    "numero": 37,
+    "enunciado": "Qual o serviço de computação que roda containers sem a necessidade de gerenciar instâncias EC2?",
+    "opcoes": {
+      "A": "Amazon ECS.",
+      "B": "Amazon EKS.",
+      "C": "AWS Fargate.",
+      "D": "AWS Elastic Beanstalk."
+    },
+    "resposta": "C",
+    "dominio": 2,
+    "explicacao": "O AWS Fargate é um motor de computação serverless para containers que elimina o gerenciamento de servidores ou clusters."
+  },
+  {
+    "numero": 38,
+    "enunciado": "Qual métrica monitora o uso de CPU em uma instância EC2?",
+    "opcoes": {
+      "A": "NetworkIn.",
+      "B": "CPUUtilization.",
+      "C": "DiskReadOps.",
+      "D": "StatusCheckFailed."
+    },
+    "resposta": "B",
+    "dominio": 3,
+    "explicacao": "CPUUtilization é a métrica padrão no Amazon CloudWatch para monitorar o uso de processamento de uma instância EC2."
+  },
+  {
+    "numero": 39,
+    "enunciado": "Qual a melhor maneira de compartilhar chaves de criptografia entre contas AWS?",
+    "opcoes": {
+      "A": "Copiar a chave para a outra conta.",
+      "B": "Usar AWS KMS Key Policy para permitir acesso entre contas.",
+      "C": "Criar uma nova chave em cada conta.",
+      "D": "Usar AWS Secrets Manager."
+    },
+    "resposta": "B",
+    "dominio": 1,
+    "explicacao": "O KMS permite definir políticas de chave (Key Policy) para conceder permissão de uso a identidades de outras contas AWS de forma segura."
+  },
+  {
+    "numero": 40,
+    "enunciado": "Como distribuir tráfego de rede para múltiplas AZs com alta escalabilidade e performance?",
+    "opcoes": {
+      "A": "Elastic Load Balancer.",
+      "B": "Route 53.",
+      "C": "Direct Connect.",
+      "D": "VPC Endpoint."
+    },
+    "resposta": "A",
+    "dominio": 2,
+    "explicacao": "O ELB distribui tráfego automaticamente, garantindo alta disponibilidade e capacidade de escala para as aplicações."
+  },
+  {
+    "numero": 41,
+    "enunciado": "Para um site que serve conteúdo dinâmico globalmente, qual o serviço mais adequado para reduzir latência?",
+    "opcoes": {
+      "A": "CloudFront.",
+      "B": "S3.",
+      "C": "RDS.",
+      "D": "VPC."
+    },
+    "resposta": "A",
+    "dominio": 3,
+    "explicacao": "O CloudFront reduz a latência ao entregar conteúdo (estático ou dinâmico) a partir de localizações edge próximas aos usuários."
+  },
+  {
+    "numero": 42,
+    "enunciado": "Qual serviço é usado para monitorar falhas em instâncias EC2 e reiniciar automaticamente?",
+    "opcoes": {
+      "A": "Auto Scaling.",
+      "B": "CloudWatch Alarms.",
+      "C": "AWS Systems Manager.",
+      "D": "AWS Config."
+    },
+    "resposta": "A",
+    "dominio": 2,
+    "explicacao": "O Auto Scaling detecta falhas nas instâncias e as substitui automaticamente, mantendo a capacidade configurada."
+  },
+  {
+    "numero": 43,
+    "enunciado": "O que é um VPC Endpoint?",
+    "opcoes": {
+      "A": "Um firewall virtual.",
+      "B": "Conexão privada entre uma VPC e serviços AWS, sem internet.",
+      "C": "Um servidor proxy.",
+      "D": "Uma VPN."
+    },
+    "resposta": "B",
+    "dominio": 1,
+    "explicacao": "VPC Endpoints permitem acesso privado a serviços da AWS, como S3 ou DynamoDB, mantendo o tráfego dentro da rede da AWS."
+  },
+  {
+    "numero": 44,
+    "enunciado": "Qual a finalidade do AWS Trusted Advisor?",
+    "opcoes": {
+      "A": "Automatizar deploys.",
+      "B": "Fornecer recomendações para otimização de custo, segurança e performance.",
+      "C": "Monitorar servidores web.",
+      "D": "Gerenciar bancos de dados."
+    },
+    "resposta": "B",
+    "dominio": 4,
+    "explicacao": "O Trusted Advisor analisa seu ambiente AWS e oferece recomendações para reduzir custos, melhorar performance e aumentar a segurança."
+  },
+  {
+    "numero": 45,
+    "enunciado": "Para o armazenamento de logs que exigem acesso imediato quando necessários, qual a classe de S3?",
+    "opcoes": {
+      "A": "S3 Standard.",
+      "B": "S3 Standard-IA.",
+      "C": "S3 Glacier Flexible Retrieval.",
+      "D": "S3 Glacier Deep Archive."
+    },
+    "resposta": "B",
+    "dominio": 4,
+    "explicacao": "O S3 Standard-IA é ideal para dados de acesso pouco frequente, mas que exigem acesso rápido (milissegundos) quando consultados."
+  },
+  {
+    "numero": 46,
+    "enunciado": "Qual a melhor maneira de gerenciar a configuração de instâncias EC2 em larga escala?",
+    "opcoes": {
+      "A": "Scripts manuais.",
+      "B": "AWS Systems Manager (State Manager).",
+      "C": "Acesso via SSH.",
+      "D": "AWS Config."
+    },
+    "resposta": "B",
+    "dominio": 2,
+    "explicacao": "O Systems Manager (State Manager) automatiza a configuração e manutenção do estado de instâncias EC2 de forma centralizada."
+  },
+  {
+    "numero": 47,
+    "enunciado": "Qual serviço atua como firewall de aplicação web para prevenir injeção SQL e XSS?",
+    "opcoes": {
+      "A": "AWS WAF.",
+      "B": "Network ACL.",
+      "C": "Security Groups.",
+      "D": "Route 53."
+    },
+    "resposta": "A",
+    "dominio": 1,
+    "explicacao": "O AWS WAF é um firewall de camada 7 que filtra tráfego malicioso baseado em regras personalizadas."
+  },
+  {
+    "numero": 48,
+    "enunciado": "Qual o serviço de análise de big data gerenciado na AWS?",
+    "opcoes": {
+      "A": "Amazon Redshift.",
+      "B": "Amazon EMR.",
+      "C": "Amazon Athena.",
+      "D": "Amazon QuickSight."
+    },
+    "resposta": "B",
+    "dominio": 3,
+    "explicacao": "O Amazon EMR simplifica o processamento de grandes volumes de dados usando frameworks como Apache Spark e Hadoop."
+  },
+  {
+    "numero": 49,
+    "enunciado": "Qual a função do AWS CloudTrail?",
+    "opcoes": {
+      "A": "Monitorar performance.",
+      "B": "Registrar chamadas de API da conta AWS para auditoria.",
+      "C": "Criptografar dados.",
+      "D": "Gerenciar faturamento."
+    },
+    "resposta": "B",
+    "dominio": 1,
+    "explicacao": "O CloudTrail provê visibilidade sobre as ações realizadas na conta, essencial para conformidade e segurança."
+  },
+  {
+    "numero": 50,
+    "enunciado": "Qual serviço permite rodar uma aplicação baseada em docker facilmente?",
+    "opcoes": {
+      "A": "Amazon ECS.",
+      "B": "AWS Elastic Beanstalk.",
+      "C": "Amazon EC2.",
+      "D": "Amazon EFS."
+    },
+    "resposta": "A",
+    "dominio": 2,
+    "explicacao": "O Amazon ECS (Elastic Container Service) é a plataforma nativa AWS para orquestração de containers docker."
+  }
+]

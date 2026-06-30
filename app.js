@@ -258,7 +258,8 @@ function convertJSONQuestions(jsonData) {
             text: text,
             options: options,
             answer: answer,
-            domain: domain
+            domain: domain,
+            explicacao: q.explicacao || q.explanation || ""
         };
     }).filter(q => q.text && Object.keys(q.options).length >= 2 && q.answer);
 }
@@ -1240,18 +1241,33 @@ function refreshState() {
     if (!state.syncedTracks.has(state.activeTrack)) {
         state.syncedTracks.add(state.activeTrack);
         
-        const trackFilePath = `./questions/${state.activeTrack}.txt`;
-        console.log(`Buscando atualizações de questões para ${state.activeTrack} em: ${trackFilePath}`);
+        const jsonFilePath = `./questions/${state.activeTrack}.json`;
+        const txtFilePath = `./questions/${state.activeTrack}.txt`;
+        console.log(`Buscando atualizações de questões para ${state.activeTrack} (.json ou .txt)...`);
         
-        fetch(`${trackFilePath}?t=${Date.now()}`)
+        fetch(`${jsonFilePath}?t=${Date.now()}`)
             .then(res => {
-                if (!res.ok) throw new Error(`Arquivo não encontrado: ${res.status}`);
-                return res.text();
+                if (res.ok) {
+                    return res.json().then(data => ({ type: 'json', data }));
+                }
+                return fetch(`${txtFilePath}?t=${Date.now()}`)
+                    .then(txtRes => {
+                        if (!txtRes.ok) throw new Error(`Nenhum arquivo de trilha encontrado (.json ou .txt)`);
+                        return txtRes.text();
+                    })
+                    .then(text => ({ type: 'txt', data: text }));
             })
-            .then(text => {
-                const parsed = parseTXTQuestions(text);
+            .then(result => {
+                let parsed = [];
+                if (result.type === 'json') {
+                    parsed = convertJSONQuestions(result.data);
+                    console.log(`Auto-sincronização JSON bem sucedida: ${parsed.length} questões encontradas para ${state.activeTrack}.`);
+                } else {
+                    parsed = parseTXTQuestions(result.data);
+                    console.log(`Auto-sincronização TXT bem sucedida: ${parsed.length} questões encontradas para ${state.activeTrack}.`);
+                }
+                
                 if (parsed.length > 0) {
-                    console.log(`Auto-sincronização bem sucedida: ${parsed.length} questões encontradas para ${state.activeTrack}.`);
                     // Limpar e salvar novamente no banco IndexedDB
                     return clearQuestionsByTrackInDB(state.activeTrack)
                         .then(() => saveQuestionsToDB(parsed, state.activeTrack))
@@ -1643,6 +1659,11 @@ function renderQuestion() {
     if (hintBox) hintBox.style.display = "none";
     if (hintText) hintText.innerText = "";
     
+    const explanationBox = document.getElementById("questionExplanationBox");
+    const explanationText = document.getElementById("questionExplanationText");
+    if (explanationBox) explanationBox.style.display = "none";
+    if (explanationText) explanationText.innerText = "";
+    
     document.getElementById("currentQuestionNumber").innerText = state.currentQuestionIndex + 1;
     document.getElementById("totalQuestionsNumber").innerText = state.currentQuiz.length;
     
@@ -1784,6 +1805,15 @@ function verifyAnswer() {
         sentToFridge: sentToFridge,
         domain: question.domain || 1
     });
+    
+    // Exibir explicação se existir
+    const explanationBox = document.getElementById("questionExplanationBox");
+    const explanationText = document.getElementById("questionExplanationText");
+    const explanationVal = question.explicacao || question.explanation || "";
+    if (explanationBox && explanationText && explanationVal) {
+        explanationText.innerText = explanationVal;
+        explanationBox.style.display = "block";
+    }
     
     document.getElementById("btnVerifyAnswer").style.display = "none";
     const btnNext = document.getElementById("btnNextQuestion");
