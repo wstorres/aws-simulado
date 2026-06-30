@@ -632,8 +632,8 @@ main {
 }
 
 .custom-input option {
-    background-color: #1a1a20;
-    color: #ffffff;
+    background-color: #ffffff !important;
+    color: #111111 !important;
 }
 
 /* Drag and Drop File Upload Area (Admin) */
