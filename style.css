@@ -2015,3 +2015,49 @@ footer a:hover {
     box-shadow: 0 0 8px rgba(251, 191, 36, 0.3);
 }
 
+/* --- CLOUD SYNC: SINCRONIZAÇÃO GITHUB --- */
+.github-sync-section {
+    border-top: 1px solid var(--border-color);
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+}
+
+.github-sync-section h4 {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--text-highlight);
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.github-sync-section .input-group {
+    margin-bottom: 0.4rem;
+}
+
+.github-sync-section .input-group label {
+    font-size: 0.7rem;
+    margin-bottom: 0.15rem;
+    color: var(--text-muted);
+}
+
+.github-sync-section .custom-input {
+    padding: 0.4rem 0.6rem;
+    font-size: 0.8rem;
+    background: rgba(255, 255, 255, 0.02);
+}
+
+#btnSyncGithub {
+    padding: 0.4rem;
+    font-size: 0.8rem;
+    margin-top: 0.25rem;
+    width: 100%;
+}
+
+#githubSyncStatus {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    text-align: center;
+    margin-top: 0.35rem;
+}
+

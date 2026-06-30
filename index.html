@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AWS Cloud Practice - Simulado Preparatório</title>
     <meta name="description" content="Simulado preparatório estático para certificações AWS com análise de perfil em tempo real e sistema de memorização ativa (Geladeira).">
-    <link rel="stylesheet" href="style.css?v=11.0">
+    <link rel="stylesheet" href="style.css?v=12.0">
 </head>
 <body>
     <!-- Glow Background Elements -->
@@ -230,6 +230,23 @@
                                 <option value="associate" selected>AWS Certified Solutions Architect - Associate (SAA-C03)</option>
                                 <option value="professional">AWS Certified Solutions Architect - Professional (SAP-C02)</option>
                             </select>
+                        </div>
+                        
+                        <!-- GitHub Sync Section -->
+                        <div class="github-sync-section">
+                            <h4>☁️ Sincronização GitHub (Nuvem)</h4>
+                            <div class="input-group">
+                                <label for="githubTokenInput">GitHub Token (PAT)</label>
+                                <input type="password" id="githubTokenInput" class="custom-input" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
+                            </div>
+                            <div class="input-group">
+                                <label for="githubRepoInput">Repositório GitHub</label>
+                                <input type="text" id="githubRepoInput" class="custom-input" placeholder="usuario/repositorio">
+                            </div>
+                            <button class="btn btn-secondary" id="btnSyncGithub">
+                                Sincronizar Agora 🔄
+                            </button>
+                            <div id="githubSyncStatus">Nuvem desativada (offline)</div>
                         </div>
 
                         <!-- Primary Actions Card -->
@@ -650,6 +667,6 @@ Domínio: 1</div>
     </footer>
 
     <!-- App Logic Script -->
-    <script src="app.js?v=11.0"></script>
+    <script src="app.js?v=12.0"></script>
 </body>
 </html>

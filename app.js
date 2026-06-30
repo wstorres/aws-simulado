@@ -473,6 +473,194 @@ function saveProfileToLocalStorage() {
     };
     
     localStorage.setItem(PLAYER_PREFIX + state.userName, JSON.stringify(dataToSave));
+    
+    // Disparar sincronização com o GitHub em segundo plano
+    pushProfileToGithub();
+}
+
+// --- SINCRONIZAÇÃO EM NUVEM VIA GITHUB API ---
+function pushProfileToGithub() {
+    const token = localStorage.getItem("aws_simulator_github_token");
+    const repo = localStorage.getItem("aws_simulator_github_repo");
+    const statusEl = document.getElementById("githubSyncStatus");
+    
+    if (!token || !repo || !state.userName) return;
+    
+    const url = `https://api.github.com/repos/${repo}/contents/profiles/${state.userName}.json`;
+    const headers = {
+        "Authorization": `token ${token}`,
+        "Accept": "application/vnd.github.v3+json",
+        "Cache-Control": "no-cache"
+    };
+    
+    fetch(url, { headers })
+        .then(res => {
+            if (res.status === 404) return { sha: null };
+            if (!res.ok) throw new Error(`Erro ao obter SHA: ${res.status}`);
+            return res.json();
+        })
+        .then(data => {
+            const sha = data.sha;
+            
+            const payload = {
+                userName: state.userName,
+                profiles: {},
+                missions: state.missions || {},
+                consecutiveSeiCount: state.consecutiveSeiCount || 0
+            };
+            
+            ["practitioner", "associate", "professional"].forEach(track => {
+                const p = state.profiles[track];
+                payload.profiles[track] = {
+                    level: p.level || "amador",
+                    consecutiveIntCount: p.consecutiveIntCount || 0,
+                    consecutiveProfCount: p.consecutiveProfCount || 0,
+                    bestScore: p.bestScore || 0,
+                    history: p.history || [],
+                    fridge: Array.from(p.fridge || [])
+                };
+            });
+            
+            const fileContent = JSON.stringify(payload, null, 2);
+            const base64Content = btoa(unescape(encodeURIComponent(fileContent)));
+            
+            const body = {
+                message: `sync: update profile for ${state.userName}`,
+                content: base64Content
+            };
+            if (sha) body.sha = sha;
+            
+            return fetch(url, {
+                method: "PUT",
+                headers: {
+                    ...headers,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(body)
+            });
+        })
+        .then(res => {
+            if (res.ok) {
+                console.log("Perfil enviado ao GitHub com sucesso.");
+                if (statusEl) statusEl.innerText = "Sincronizado na Nuvem ☁️";
+            } else {
+                throw new Error(`Erro no PUT: ${res.status}`);
+            }
+        })
+        .catch(err => {
+            console.error("Erro no push para o GitHub:", err);
+            if (statusEl) statusEl.innerText = "Erro na sincronização ⚠️";
+        });
+}
+
+function syncProfileFromGithub(isManual = false) {
+    const token = localStorage.getItem("aws_simulator_github_token");
+    const repo = localStorage.getItem("aws_simulator_github_repo");
+    const statusEl = document.getElementById("githubSyncStatus");
+    
+    if (!token || !repo) {
+        if (statusEl) statusEl.innerText = "Nuvem desativada (offline)";
+        if (isManual) alert("Por favor, preencha o Token do GitHub e o Repositório antes de sincronizar!");
+        return;
+    }
+    
+    if (!state.userName) {
+        if (isManual) alert("Por favor, faça login em um perfil antes de sincronizar!");
+        return;
+    }
+    
+    if (statusEl) statusEl.innerText = "Conectando ao GitHub...";
+    
+    const url = `https://api.github.com/repos/${repo}/contents/profiles/${state.userName}.json`;
+    const headers = {
+        "Authorization": `token ${token}`,
+        "Accept": "application/vnd.github.v3+json",
+        "Cache-Control": "no-cache"
+    };
+    
+    fetch(url, { headers })
+        .then(res => {
+            if (res.status === 404) {
+                if (statusEl) statusEl.innerText = "Sem perfil na nuvem. Criando...";
+                pushProfileToGithub();
+                return null;
+            }
+            if (!res.ok) throw new Error(`Erro na API do GitHub: ${res.status}`);
+            return res.json();
+        })
+        .then(data => {
+            if (!data) return;
+            
+            const rawContent = atob(data.content.replace(/\s/g, ''));
+            const remoteProfile = JSON.parse(decodeURIComponent(escape(rawContent)));
+            
+            let updated = false;
+            
+            ["practitioner", "associate", "professional"].forEach(track => {
+                const localHistory = state.profiles[track].history || [];
+                const remoteHistory = remoteProfile.profiles?.[track]?.history || [];
+                
+                if (remoteHistory.length > localHistory.length) {
+                    state.profiles[track].level = remoteProfile.profiles[track].level || "amador";
+                    state.profiles[track].consecutiveIntCount = remoteProfile.profiles[track].consecutiveIntCount || 0;
+                    state.profiles[track].consecutiveProfCount = remoteProfile.profiles[track].consecutiveProfCount || 0;
+                    state.profiles[track].bestScore = remoteProfile.profiles[track].bestScore || 0;
+                    state.profiles[track].history = remoteProfile.profiles[track].history || [];
+                    state.profiles[track].fridge = new Set(remoteProfile.profiles[track].fridge || []);
+                    updated = true;
+                }
+            });
+            
+            if (remoteProfile.missions) {
+                if (!state.missions) state.missions = {};
+                for (let mKey in remoteProfile.missions) {
+                    const remoteM = remoteProfile.missions[mKey];
+                    const localM = state.missions[mKey] || { completed: false };
+                    
+                    if (remoteM.completed && !localM.completed) {
+                        state.missions[mKey] = remoteM;
+                        updated = true;
+                    }
+                }
+            }
+            
+            if (remoteProfile.consecutiveSeiCount && remoteProfile.consecutiveSeiCount > (state.consecutiveSeiCount || 0)) {
+                state.consecutiveSeiCount = remoteProfile.consecutiveSeiCount;
+                updated = true;
+            }
+            
+            if (updated) {
+                const localData = {
+                    userName: state.userName,
+                    profiles: {},
+                    missions: state.missions || {},
+                    consecutiveSeiCount: state.consecutiveSeiCount || 0
+                };
+                ["practitioner", "associate", "professional"].forEach(track => {
+                    const p = state.profiles[track];
+                    localData.profiles[track] = {
+                        level: p.level || "amador",
+                        consecutiveIntCount: p.consecutiveIntCount || 0,
+                        consecutiveProfCount: p.consecutiveProfCount || 0,
+                        bestScore: p.bestScore || 0,
+                        history: p.history || [],
+                        fridge: Array.from(p.fridge || [])
+                    };
+                });
+                localStorage.setItem(PLAYER_PREFIX + state.userName, JSON.stringify(localData));
+                refreshState();
+            }
+            
+            pushProfileToGithub();
+            
+            if (statusEl) statusEl.innerText = "Sincronizado na Nuvem ☁️";
+            if (isManual) alert("Sincronização com o GitHub realizada com sucesso!");
+        })
+        .catch(err => {
+            console.error("Erro na sincronização:", err);
+            if (statusEl) statusEl.innerText = "Erro na sincronização ⚠️";
+            if (isManual) alert(`Erro ao sincronizar com o GitHub: ${err.message}`);
+        });
 }
 
 function loadProfileFromLocalStorage() {
@@ -520,6 +708,9 @@ function loginPlayer(name, showWelcomeMessage = false) {
             
             showSection("dashboardSection");
             refreshState();
+            
+            // Tentar sincronizar em nuvem silenciosamente se houver token configurado
+            syncProfileFromGithub(false);
             
             if (showWelcomeMessage) {
                 alert(`Bem-vindo, ${name}!`);
@@ -2153,6 +2344,26 @@ document.addEventListener("DOMContentLoaded", () => {
             }, 800);
         });
     }
+    
+    // Inicializar inputs do GitHub a partir do localStorage
+    const githubTokenInput = document.getElementById("githubTokenInput");
+    const githubRepoInput = document.getElementById("githubRepoInput");
+    
+    if (githubTokenInput) {
+        githubTokenInput.value = localStorage.getItem("aws_simulator_github_token") || "";
+        githubTokenInput.addEventListener("input", (e) => {
+            localStorage.setItem("aws_simulator_github_token", e.target.value.trim());
+        });
+    }
+    
+    if (githubRepoInput) {
+        githubRepoInput.value = localStorage.getItem("aws_simulator_github_repo") || "";
+        githubRepoInput.addEventListener("input", (e) => {
+            localStorage.setItem("aws_simulator_github_repo", e.target.value.trim());
+        });
+    }
+    
+    safeBindClick("btnSyncGithub", () => syncProfileFromGithub(true));
     
     safeBindClick("btnStartSimulator", () => generateSimulator());
     safeBindClick("btnOpenFridge", openFridgeModal);
