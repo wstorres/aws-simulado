@@ -130,3 +130,388 @@ D) Criar uma Read Replica e direcionar o tráfego de relatórios para essa répl
 Resposta: D
 Domínio: 4
 
+Uma equipe de engenharia deseja examinar a viabilidade do recurso de dados do usuário do Amazon EC2 para um projeto futuro. Quais das seguintes afirmações são verdadeiras sobre a configuração de dados do usuário do EC2? (Selecione duas)
+A) Por padrão, os dados do usuário são executados sempre que uma instância EC2 é reiniciada.
+B) Quando uma instância estiver em execução, você poderá atualizar os dados do usuário usando as credenciais do usuário root.
+C) Por padrão, os scripts inseridos como dados do usuário são executados com privilégios de usuário root.
+D) Por padrão, os scripts inseridos como dados do usuário não possuem privilégios de usuário root para execução.
+E) Por padrão, os dados do usuário são executados apenas durante o ciclo de inicialização, quando você inicia uma instância pela primeira vez.
+Resposta: C e E
+Domínio: 1
+Você deseja montar um sistema de arquivos de rede em instâncias Linux, onde os arquivos serão armazenados e acessados com frequência inicialmente, e posteriormente com pouca frequência. Qual solução é a MAIS econômica?
+A) Arquivo Glacier Deep
+B) S3 Hierarquia Inteligente
+C) FSx para Lustre
+D) EFS IA
+Resposta: D
+Domínio: 2
+Uma empresa de análise de dados deseja melhorar o desempenho de seus fluxos de trabalho de processamento de big data executados no Amazon EFS. Qual dos seguintes modos de desempenho deve ser usado para o EFS para atender a esse requisito?
+A) Provisioned Throughput
+B) Max I/O
+C) Bursting Throughput
+D) General Purpose
+Resposta: B
+Domínio: 2
+Um estúdio de Hollywood está planejando uma série de eventos promocionais que antecedem o lançamento do trailer de seu próximo thriller de ficção científica. Os executivos do estúdio desejam criar um site estático com muitas animações alinhadas ao tema do filme. O estúdio contratou você como arquiteto de soluções para construir uma solução sem servidor (serverless) escalável. Qual das seguintes opções representa a solução MAIS econômica e de alto desempenho?
+A) Hospedar o site em uma instância no data center local do estúdio. Criar uma distribuição do Amazon CloudFront com essa instância como origem personalizada.
+B) Construir o site como um site estático hospedado no Amazon S3. Criar uma distribuição do Amazon CloudFront com o Amazon S3 como origem. Usar o Amazon Route 53 para criar um registro do tipo alias que aponte para sua distribuição do CloudFront.
+C) Hospedar o site no AWS Lambda. Criar uma distribuição do Amazon CloudFront com o Lambda como origem.
+D) Hospedar o site em uma instância EC2. Criar uma distribuição do Amazon CloudFront com a instância EC2 como origem personalizada.
+Resposta: B
+Domínio: 1
+Um desenvolvedor precisa implementar uma função Lambda na conta AWS A que acessa um bucket do Amazon S3 na conta AWS B. Como Arquiteto de Soluções, qual das seguintes opções você recomendará para atender a esse requisito?
+A) Criar uma função IAM para a função Lambda que conceda acesso ao bucket do S3. Definir a função IAM como a função de execução da função Lambda e isso daria à função Lambda acesso entre contas ao bucket do S3.
+B) Criar uma função IAM para a função Lambda que conceda acesso ao bucket do S3. Definir a função IAM como a função de execução da função Lambda. Certificar-se de que a política do bucket também conceda acesso à função de execução da função Lambda.
+C) O AWS Lambda não pode acessar recursos entre contas da AWS. Usar a federação de identidade para contornar essa limitação do Lambda.
+D) O proprietário do bucket do S3 deve tornar o bucket público para que ele possa ser acessado pela função Lambda na outra conta da AWS.
+Resposta: B
+Domínio: 1
+Uma empresa de TI está trabalhando no engajamento de um cliente para construir uma ferramenta de análise de dados em tempo real para dados da Internet das Coisas (IoT). Os dados de IoT são canalizados para o Kinesis Data Streams, que atua como a origem de um fluxo de entrega para o Kinesis Firehose. A equipe de engenharia configurou agora um Kinesis Agent para enviar dados de IoT de outro conjunto de dispositivos para o mesmo fluxo de entrega do Firehose. Eles notaram que os dados não estão chegando ao Firehose como esperado. Como arquiteto de soluções, qual das seguintes opções você atribuiria como a causa raiz MAIS plausível por trás desse problema?
+A) O Kinesis Agent só pode gravar no Kinesis Data Streams, não no Kinesis Firehose.
+B) O fluxo de entrega do Kinesis Firehose atingiu seu limite e precisa ser dimensionado manualmente.
+C) O Kinesis Agent não pode gravar em um Kinesis Firehose para o qual a origem do fluxo de entrega já esteja definida como Kinesis Data Streams.
+D) Os dados enviados pelo Kinesis Agent são perdidos por causa de um erro de configuração.
+Resposta: C
+Domínio: 3
+Você foi contratado como Arquiteto de Soluções para aconselhar uma empresa sobre os vários mecanismos de autenticação/autorização que a AWS oferece para autorizar uma chamada de API dentro do API Gateway. A empresa prefere uma solução que ofereça gerenciamento de usuários integrado. Qual das seguintes soluções você sugeriria como a mais adequada para o caso de uso apresentado?
+A) Usar o autorizador Lambda do API Gateway
+B) Usar a autorização AWS_IAM
+C) Usar os Pools de Usuários do Amazon Cognito (Cognito User Pools)
+D) Usar os Pools de Identidade do Amazon Cognito (Cognito Identity Pools)
+Resposta: C
+Domínio: 1
+Uma startup desenvolveu um serviço de backup de vídeo hospedado em instâncias EC2 atrás de um ALB. Os vídeos são armazenados em volumes EBS anexados a cada instância. Os usuários reclamam que só veem um subconjunto de seus vídeos enviados, dependendo de qual instância eles se conectam. Qual é a solução MAIS ideal para garantir que os usuários possam visualizar todos os vídeos enviados? (Selecione duas)
+A) Escrever um trabalho de execução única para copiar os vídeos de todos os volumes EBS para o S3 e, em seguida, modificar a aplicação para usar o Amazon S3 Standard para armazenar os vídeos.
+B) Montar o EFS em todas as instâncias EC2. Escrever um trabalho de execução única para copiar os vídeos de todos os volumes EBS para o EFS. Modificar a aplicação para usar o EFS para armazenar os vídeos.
+C) Escrever um trabalho de execução única para copiar os vídeos de todos os volumes EBS para o DynamoDB e, em seguida, modificar a aplicação para usar o DynamoDB para armazenar os vídeos.
+D) Escrever um trabalho de execução única para copiar os vídeos de todos os volumes EBS para o RDS e, em seguida, modificar a aplicação para usar o RDS para armazenar os vídeos.
+E) Escrever um trabalho de execução única para copiar os vídeos de todos os volumes EBS para o S3 Glacier Deep Archive e, em seguida, modificar a aplicação para usar o S3 Glacier Deep Archive para armazenar os vídeos.
+Resposta: A e B
+Domínio: 2
+Uma empresa de serviços financeiros implantou sua principal aplicação em instâncias EC2. Como a aplicação lida com dados confidenciais de clientes, a equipe de segurança deseja garantir que quaisquer certificados SSL/TLS de terceiros configurados em instâncias EC2 via AWS Certificate Manager (ACM) sejam renovados antes do vencimento. A equipe deve ser notificada 30 dias antes do vencimento, com o mínimo de codificação e manutenção. O que você recomendará?
+A) Monitorar a métrica do CloudWatch de dias até o vencimento para certificados importados para o ACM. Criar um alarme do CloudWatch para monitorar esses certificados com base na métrica de dias até o vencimento e, em seguida, acionar uma ação personalizada de notificação à equipe de segurança.
+B) Aproveitar uma regra gerenciada do AWS Config para verificar se quaisquer certificados SSL/TLS de terceiros importados para o ACM estão marcados para expirar em 30 dias. Configurar a regra para acionar uma notificação do SNS para a equipe de segurança se algum certificado expirar em 30 dias.
+C) Aproveitar uma regra gerenciada do AWS Config para verificar se quaisquer certificados SSL/TLS criados via ACM estão marcados para expirar em 30 dias. Configurar a regra para acionar uma notificação do SNS para a equipe de segurança se algum certificado expirar em 30 dias.
+D) Monitorar a métrica do CloudWatch de dias até o vencimento para certificados criados via ACM. Criar um alarme do CloudWatch para monitorar esses certificados com base na métrica de dias até o vencimento e, em seguida, acionar uma ação personalizada de notificação à equipe de segurança.
+Resposta: B
+Domínio: 1
+Uma empresa de TI possui uma aplicação de Gerenciamento de Controle de Acesso que usa o Amazon RDS para MySQL, mas está enfrentando problemas de desempenho, apesar do uso de Read Replicas. A empresa deseja resolver esses desafios sem se afastar do esquema relacional. Com filiais em todo o mundo, a solução deve funcionar em escala global. Qual das seguintes opções é a solução MAIS econômica e de alto desempenho?
+A) Usar as Tabelas Globais do Amazon DynamoDB para fornecer desempenho rápido e local de leitura e gravação em cada região.
+B) Criar instâncias EC2 em cada região da AWS, instalar bancos de dados MySQL e migrar os dados existentes para esses novos bancos de dados.
+C) Usar o Amazon Aurora Global Database para permitir leituras locais rápidas com baixa latência em cada região.
+D) Criar um cluster do Redshift em cada região da AWS e migrar os dados existentes para os clusters do Redshift.
+Resposta: C
+Domínio: 3
+Uma aplicação de mídia social está hospedada em uma frota de servidores EC2 em execução atrás de um Application Load Balancer. O tráfego da aplicação é antecipado por uma distribuição do CloudFront. A equipe de engenharia deseja desacoplar o processo de autenticação de usuários para a aplicação, de modo que os servidores da aplicação possam focar apenas na lógica de negócios. Como Arquiteto de Soluções, qual das seguintes soluções você recomendaria para a equipe de desenvolvimento para que exija o mínimo esforço de desenvolvimento?
+A) Usar a autenticação do Cognito via Cognito User Pools para sua distribuição do CloudFront.
+B) Usar a autenticação do Cognito via Cognito Identity Pools para sua distribuição do CloudFront.
+C) Usar a autenticação do Cognito via Cognito User Pools para seu Application Load Balancer.
+D) Usar a autenticação do Cognito via Cognito Identity Pools para seu Application Load Balancer.
+Resposta: C
+Domínio: 1
+O gerente de engenharia de uma aplicação de gerenciamento de conteúdo deseja configurar réplicas de leitura do RDS para fornecer desempenho aprimorado e escalabilidade de leitura. O gerente deseja entender as cobranças de transferência de dados ao configurar as réplicas de leitura do RDS. Qual das seguintes opções você identificaria como correta em relação às cobranças de transferência de dados para réplicas de leitura do RDS?
+A) Existem cobranças de transferência de dados para replicar dados entre Regiões da AWS.
+B) Existem cobranças de transferência de dados para replicar dados dentro da mesma Região da AWS.
+C) Existem cobranças de transferência de dados para replicar dados dentro da mesma Zona de Disponibilidade.
+D) Não existem cobranças de transferência de dados para replicar dados entre Regiões da AWS.
+Resposta: A
+Domínio: 1
+Uma aplicação de comércio eletrônico usa uma implantação Multi-AZ do Amazon Aurora para seu banco de dados. A equipe de engenharia descobriu que as leituras do banco de dados estão causando alta E/S e adicionando latência às solicitações de gravação. Como um arquiteto de soluções associado, o que você recomendaria para separar as solicitações de leitura das solicitações de gravação?
+A) Configurar uma réplica de leitura e modificar a aplicação para usar o endpoint apropriado.
+B) Ativar o cache de leitura direta (read-through caching) no banco de dados Amazon Aurora.
+C) Configurar a aplicação para ler a partir da instância de standby Multi-AZ.
+D) Provisionar outro banco de dados Amazon Aurora e vinculá-lo ao banco de dados primário como uma réplica de leitura.
+Resposta: A
+Domínio: 3
+Sua empresa implantou uma aplicação que realizará muitas substituições e exclusões em dados e exige que as informações mais recentes estejam disponíveis a qualquer momento em que os dados forem lidos por meio de consultas em tabelas de banco de dados. Como Arquiteto de Soluções, qual tecnologia de banco de dados você recomendará?
+A) Amazon Neptune
+B) Amazon Relational Database Service (Amazon RDS)
+C) Amazon ElastiCache
+D) Amazon Simple Storage Service (Amazon S3)
+Resposta: B
+Domínio: 2
+Para melhorar o desempenho e a segurança da aplicação, a equipe de engenharia de uma empresa criou uma distribuição do CloudFront com um Application Load Balancer como origem personalizada. A equipe também configurou um Web Application Firewall (WAF) com a distribuição do CloudFront. A equipe de segurança da empresa notou um aumento de ataques maliciosos de um endereço IP específico para roubar dados confidenciais armazenados nas instâncias EC2. Como arquiteto de soluções, qual das seguintes ações você recomendaria para parar os ataques?
+A) Criar uma regra de negação para o IP malicioso nos Security Groups associados a cada uma das instâncias.
+B) Criar um chamado com o suporte da AWS para tomar providências contra o IP malicioso.
+C) Criar uma condição de correspondência de IP (IP match condition) no WAF para bloquear o endereço IP malicioso.
+D) Criar uma regra de negação para o IP malicioso na NACL associada a cada uma das instâncias.
+Resposta: C
+Domínio: 1
+Uma empresa de manufatura deseja um ambiente de failover na AWS caso seu data center local falhe. O ambiente deve garantir dados uniformes entre a AWS e o ambiente local e minimizar o tempo de inatividade. Qual solução oferece o menor tempo de inatividade?
+A) Configurar um registro de failover do Route 53. Executar um template do AWS CloudFormation a partir de um script para provisionar instâncias EC2 atrás de um Application Load Balancer. Configurar o AWS Storage Gateway com volumes armazenados (stored volumes) para fazer backup dos dados no S3.
+B) Configurar un registro de failover do Route 53. Executar servidores de aplicação em instâncias EC2 atrás de um Application Load Balancer em um Auto Scaling Group. Configurar o AWS Storage Gateway com volumes armazenados (stored volumes) para fazer backup dos dados no S3.
+C) Configurar um registro de failover do Route 53. Executar uma função AWS Lambda para executar um template do AWS CloudFormation para lançar duas instâncias EC2. Configurar o AWS Storage Gateway com volumes armazenados para fazer backup dos dados no S3. Configurar uma conexão AWS Direct Connect entre uma VPC e o data center.
+D) Configurar um registro de failover do Route 53. Configurar uma conexão AWS Direct Connect entre uma VPC e o data center. Executar servidores de aplicação em EC2 em um Auto Scaling Group. Executar uma função AWS Lambda para executar um template do AWS CloudFormation para criar um Application Load Balancer.
+Resposta: B
+Domínio: 4
+Você gostaria de armazenar uma senha de banco de dados em um local seguro e habilitar a rotação automática dessa senha a cada 90 dias. O que você recomenda?
+A) CloudHSM
+B) Secrets Manager
+C) SSM Parameter Store
+D) Key Management Service (KMS)
+Resposta: B
+Domínio: 1
+Após uma revisão de segurança de sua conta AWS, um consultor da AWS descobriu que alguns bancos de dados RDS estão sem criptografia. Como Arquiteto de Soluções, quais etapas devem ser tomadas para criptografar os bancos de dados RDS?
+A) Habilitar a criptografia no banco de dados RDS usando o Console da AWS.
+B) Criar uma Réplica de Leitura do banco de dados e criptografar a réplica de leitura. Promover a réplica de leitura como um banco de dados autônomo e encerrar o banco de dados anterior.
+C) Tirar um snapshot do banco de dados, copiá-lo como um snapshot criptografado e restaurar um banco de dados a partir do snapshot criptografado. Encerrar o banco de dados anterior.
+D) Habilitar o Multi-AZ para o banco de dados e certificar-se de que a instância de standby esteja criptografada. Parar o banco de dados principal para que o banco de dados de standby assuma o controle e, em seguida, desabilitar o Multi-AZ.
+Resposta: C
+Domínio: 1
+Uma empresa de consultoria de big data construiu uma solução na qual um cluster do Redshift grava dados em um bucket do Amazon S3 pertencente a uma conta AWS diferente. No entanto, os arquivos criados no bucket do S3 usando o comando UNLOAD do cluster do Redshift não são acessíveis nem mesmo para o proprietário do bucket do S3. Qual poderia ser o motivo dessa negação de permissão para o proprietário do bucket?
+A) Quando duas contas AWS diferentes estão acessando um bucket do S3, ambas as contas devem compartilhar as políticas do bucket. Uma política errônea pode levar a essas falhas de permissão.
+B) O proprietário de um bucket do S3 tem acesso implícito a todos os objetos em seu bucket. As permissões são definidas nos objetos após eles serem completamente copiados para o local de destino. Como o proprietário não consegue acessar os arquivos enviados, a operação de gravação pode ainda estar em andamento.
+C) Quando objetos são enviados para um bucket do S3 a partir de uma conta AWS diferente, o proprietário do bucket do S3 receberá permissões implícitas para acessar esses objetos. Esse problema parece ser devido a um erro de upload que pode ser corrigido fornecendo acesso manual a partir do console da AWS.
+D) Por padrão, um objeto do S3 pertence à conta AWS que o enviou. Portanto, o proprietário do bucket do S3 não terá acesso implícito aos objetos gravados pelo cluster do Redshift.
+Resposta: D
+Domínio: 1
+Uma empresa de consultoria de big data está trabalhando no engajamento de um cliente onde as cargas de trabalho de ETL são atualmente tratadas por meio de um cluster Hadoop implantado no data center local. O cliente deseja migrar suas cargas de trabalho de ETL para a Nuvem AWS. A solução na Nuvem AWS precisa ser altamente disponível, com cerca de 50 instâncias EC2 por Zona de Disponibilidade. Como arquiteto de soluções, qual dos seguintes grupos de de posicionamento (placement groups) do EC2 você recomendaria para lidar com a carga de trabalho de ETL distribuída?
+A) Tanto o grupo de posicionamento Spread quanto o grupo de posicionamento Partition.
+B) Grupo de posicionamento Partition (Partition placement group).
+C) Grupo de posicionamento Cluster (Cluster placement group).
+D) Grupo de posicionamento Spread (Spread placement group).
+Resposta: B
+Domínio: 1
+Uma empresa deseja armazenar seus arquivos acessados com menos frequência na AWS, os quais podem ser acessados simultaneamente por centenas de instâncias EC2. A empresa precisa do serviço de armazenamento de arquivos mais econômico que forneça acesso imediato aos dados sempre que necessário. Qual das seguintes opções representa a melhor solução para os requisitos apresentados?
+A) Classe de armazenamento Amazon Elastic File System (EFS) Standard–IA.
+B) Classe de armazenamento Amazon Elastic File System (EFS) Standard.
+C) Amazon Elastic Block Store (EBS).
+D) Classe de armazenamento Amazon S3 Standard-Infrequent Access (S3 Standard-IA).
+Resposta: A
+Domínio: 2
+Considere uma política do IAM com uma declaração que permite a ação ec2:RunInstances em todos os recursos, sob a condição de que o endereço IP de origem do solicitante (aws:SourceIp) esteja dentro do bloco CIDR 34.50.31.0/24. O que essa política do IAM faz?
+A) Ela permite iniciar instâncias EC2 apenas quando o IP de onde a chamada se origina está dentro do bloco CIDR 34.50.31.0/24.
+B) Ela permite iniciar instâncias EC2 apenas quando elas têm um IP Público dentro do bloco CIDR 34.50.31.0/24.
+C) Ela permite iniciar instâncias EC2 apenas quando elas têm um IP Elástico dentro do bloco CIDR 34.50.31.0/24.
+D) Ela permite iniciar instâncias EC2 apenas quando elas têm um IP Privado dentro do bloco CIDR 34.50.31.0/24.
+Resposta: A
+Domínio: 1
+Uma empresa de varejo executa cargas de trabalho de big data em instâncias EC2. A aplicação roda 24 horas por dia, 7 dias por semana, durante todo o ano, e precisa de pelo menos 20 instâncias para manter o desempenho mínimo. Ela exige até 300 instâncias durante os picos e, com base no histórico, precisa de 80 instâncias em 80% do tempo. Como Arquiteto de Soluções, qual opção é a solução MAIS econômica para atender à demanda de carga de trabalho em estado estacionário?
+A) Adquirir 80 instâncias spot. Usar um Auto Scaling Group para provisionar as instâncias restantes como instâncias sob demanda de acordo com a demanda da carga de trabalho.
+B) Adquirir 80 instâncias sob demanda. Provisionar instâncias adicionais sob demanda e spot de acordo com a demanda da carga de trabalho (usar um Auto Scaling Group com template de lançamento para provisionar a mistura de instâncias sob demanda e spot).
+C) Adquirir 80 instâncias reservadas. Provisionar instâncias adicionais sob demanda e spot de acordo com a demanda da carga de trabalho (usar um Auto Scaling Group com template de lançamento para provisionar a mistura de instâncias sob demanda e spot).
+D) Adquirir 20 instâncias sob demanda. Usar um Auto Scaling Group para provisionar as instâncias restantes como instâncias spot de acordo com a demanda da carga de trabalho.
+Resposta: C
+Domínio: 3
+Uma startup baseada no vale do silício possui uma aplicação de gerenciamento de conteúdo com a camada web rodando em instâncias EC2 e a camada de banco de dados rodando no Amazon Aurora. Atualmente, toda a infraestrutura está localizada na região us-east-1. A startup tem 90% de seus clientes nos EUA e na Europa. A equipe de engenharia está recebendo relatórios de deterioração no desempenho da aplicação por parte de clientes na Europa, com alto tempo de carregamento da aplicação. Como arquiteto de soluções, quais das seguintes opções você recomendaria para resolver esses problemas de desempenho? (Selecione duas)
+A) Criar réplicas de leitura do Amazon Aurora na região eu-west-1.
+B) Configurar outra frota de instâncias EC2 para a camada web na região eu-west-1. Ativar a política de roteamento de geolocalização no Route 53.
+C) Configurar outra frota de instâncias EC2 para a camada web na região eu-west-1. Ativar a política de roteamento por latência no Route 53.
+D) Configurar outra frota de instâncias EC2 para a camada web na região eu-west-1. Ativar a política de roteamento de failover no Route 53.
+E) Criar uma instância de standby Multi-AZ do Amazon Aurora na região eu-west-1.
+Resposta: A e C
+Domínio: 3
+O que é verdade sobre a criptografia de Réplicas de Leitura do RDS?
+A) Se o banco de dados master estiver criptografado, as réplicas de leitura estarão criptografadas.
+B) Se o banco de dados master não estiver criptografado, as réplicas de leitura podem estar criptografadas ou não criptografadas.
+C) Se o banco de dados master estiver criptografado, as réplicas de leitura podem estar criptografadas ou não criptografadas.
+D) Se o banco de dados master não estiver criptografado, as réplicas de leitura estarão criptografadas.
+Resposta: A
+Domínio: 1
+Uma empresa de segurança cibernética usa uma frota de instâncias EC2 para executar uma aplicação proprietária. O grupo de manutenção de infraestrutura da empresa deseja ser notificado por e-mail sempre que a utilização de CPU de qualquer uma das instâncias EC2 violar um determinado limite. Quais dos seguintes serviços você usaria para construir uma solução com a MENOR quantidade de esforço de desenvolvimento? (Selecione duas)
+A) AWS Lambda
+B) Amazon SQS
+C) AWS Step Functions
+D) Amazon SNS
+E) Amazon CloudWatch
+Resposta: D e E
+Domínio: 3
+Uma empresa de consultoria de big data precisa configurar um data lake no Amazon S3 para um cliente da área de saúde. O data lake é dividido em zonas brutas (raw) e refinadas (refined). Por motivos de conformidade, os dados de origem precisam ser mantidos por no mínimo 5 anos. Os dados de origem chegam na zona bruta e são então processados por meio de um trabalho de ETL baseado no AWS Glue para a zona refinada. Os analistas de negócios executam consultas ad-hoc apenas nos dados da zona refinada usando o AWS Athena. A equipe está preocupada com o custo de armazenamento de dados nas zonas brutas e refinadas, pois os dados estão aumentando a uma taxa de 1 TB por dia em cada zona. Como arquiteto de soluções, quais das seguintes opções você recomendaria como a solução MAIS econômica? (Selecione duas)
+A) Criar um trabalho baseado em função Lambda para excluir os dados da zona bruta após 1 dia.
+B) Usar o trabalho de ETL do Glue para gravar os dados transformados na zona refinada usando um formato de arquivo compactado.
+C) Configurar uma política de ciclo de vida para fazer a transição dos dados da zona bruta para o Glacier Deep Archive após 1 dia da criação do objeto.
+D) Usar o trabalho de ETL do Glue para gravar os dados transformados na zona refinada usando o formato CSV.
+E) Configurar uma política de ciclo de vida para fazer a transição dos dados da zona refinada para o Glacier Deep Archive após 1 dia da criação do objeto.
+Resposta: B e C
+Domínio: 3
+Considere políticas do IAM escritas em formato JSON para controle de acesso ao Amazon S3. Qual das seguintes políticas do IAM fornece acesso apenas de leitura ao bucket do S3 chamado "mybucket" e ao seu conteúdo?
+A) Uma declaração única permitindo as ações s3:ListBucket e s3:GetObject aplicadas ao recurso "arn:aws:s3:::mybucket/". B) Duas declarações na mesma política: a primeira permite s3:ListBucket no recurso do bucket "arn:aws:s3:::mybucket", e a segunda permite s3:GetObject no recurso de conteúdo "arn:aws:s3:::mybucket/".
+C) Uma declaração única permitindo as ações s3:ListBucket e s3:GetObject aplicadas ao recurso do bucket "arn:aws:s3:::mybucket".
+D) Duas declarações na mesma política: a primeira permite s3:ListBucket no recurso "arn:aws:s3:::mybucket/*", e a segunda permite s3:GetObject no recurso "arn:aws:s3:::mybucket".
+Resposta: B
+Domínio: 1
+Um engenheiro de DevOps júnior deseja alterar a configuração padrão para o encerramento de volumes EBS. Por padrão, o volume raiz de uma instância EC2 para uma AMI baseada em EBS é excluído quando a instância é encerrada. Qual opção abaixo ajuda a alterar esse comportamento padrão para garantir que o volume persista mesmo após o encerramento da instância?
+A) Definir o atributo DeleteOnTermination como true.
+B) Definir o atributo TerminateOnDelete como false.
+C) Definir o atributo DeleteOnTermination como false.
+D) Definir o atributo TerminateOnDelete como true.
+Resposta: C
+Domínio: 1
+Uma empresa de serviços financeiros deseja um modelo único de processamento de logs para todos os arquivos de log (compostos por logs do sistema, logs de aplicações, logs de banco de dados, etc.) que possam ser processados de maneira sem servidor (serverless) e, em seguida, armazenados de forma durável para análises posteriores. A empresa deseja usar um serviço gerenciado da AWS que se dimensione automaticamente para corresponder à taxa de transferência dos dados de log e que não exija administração contínua. Como arquiteto de soluções, qual dos seguintes serviços da AWS você recomendaria para resolver esse problema?
+A) AWS Lambda
+B) Amazon EMR
+C) Kinesis Data Streams
+D) Kinesis Data Firehose
+Resposta: D
+Domínio: 3
+Uma empresa de serviços financeiros desenvolveu sua principal aplicação na Nuvem AWS com requisitos de segurança de dados de modo que a chave de criptografia deve ser armazenada em uma aplicação personalizada em execução no ambiente local. A empresa deseja terceirizar o armazenamento de dados, bem como o processo de criptografia para o Amazon S3, mas continuar a usar a chave de criptografia existente. Qual das seguintes opções de criptografia do S3 permite que a empresa aproveite o Amazon S3 para armazenar dados com as restrições apresentadas?
+A) Criptografia no lado do servidor com chaves fornecidas pelo cliente (SSE-C)
+B) Criptografia no lado do servidor com chaves gerenciadas pelo Amazon S3 (SSE-S3)
+C) Criptografia no lado do cliente onde a criptografia de dados é feita no lado do cliente antes de enviá-los para o Amazon S3
+D) Criptografia no lado do servidor com Customer Master Keys (CMKs) armazenadas no AWS Key Management Service (SSE-KMS)
+Resposta: A
+Domínio: 1
+Uma empresa lançou recentemente uma nova aplicação de jogos móveis que os usuários estão adotando rapidamente. A empresa usa o RDS MySQL como banco de dados. A equipe de engenharia deseja uma solução urgente para esse problema em que a carga de trabalho em rápido aumento pode exceder o armazenamento disponível no banco de dados. Como arquiteto de soluções, qual das seguintes soluções você recomendaria de modo que exija o mínimo de esforço de desenvolvimento e administração de sistemas para atender a esse requisito?
+A) Migrar o banco de dados RDS MySQL para o Aurora, que oferece dimensionamento automático de armazenamento.
+B) Criar uma réplica de leitura para o RDS MySQL.
+C) Migrar o banco de dados RDS MySQL para o DynamoDB, que aloca automaticamente espaço de armazenamento quando necessário.
+D) Habilitar o dimensionamento automático de armazenamento (storage auto-scaling) para o RDS MySQL.
+Resposta: D
+Domínio: 3
+Uma empresa está desenvolvendo uma aplicação de saúde que não pode se dar ao luxo de ter nenhum tempo de inatividade para operações de gravação no banco de dados. A empresa contratou você como um AWS Certified Solutions Architect Associate para construir uma solução usando o Amazon Aurora. Qual das seguintes opções você recomendaria?
+A) Configurar um cluster de banco de dados Aurora serverless.
+B) Configurar um cluster de banco de dados Aurora multi-master.
+C) Configurar um cluster do Aurora Global Database.
+D) Configurar un cluster de banco de dados Aurora provisionado.
+Resposta: B
+Domínio: 4
+Uma aplicação web de compartilhamento de fotos sociais está hospedada em instâncias EC2 atrás de um Elastic Load Balancer. A aplicação oferece aos usuários a capacidade de enviar suas fotos e também mostra um placar de líderes (leaderboard) na página inicial da aplicação. As fotos enviadas são armazenadas no S3 e os dados do placar de líderes são mantidos no DynamoDB. As instâncias EC2 precisam acessar tanto o S3 quanto o DynamoDB para esses recursos. Como arquiteto de soluções, qual das seguintes soluções você recomendaria como a opção MAIS segura?
+A) Salvar as credenciais da AWS (ID da chave de acesso e token de acesso secreto) em um arquivo de configuração dentro do código da aplicação nas instâncias EC2. As instâncias EC2 podem usar essas credenciais para acessar o S3 e o DynamoDB.
+B) Configurar a AWS CLI nas instâncias EC2 usando as credenciais de um usuário IAM válido. O código da aplicação pode então invocar scripts de shell para acessar o S3 e o DynamoDB via AWS CLI.
+C) Anexar a função IAM (IAM role) apropriada ao perfil de instância da instância EC2 (EC2 instance profile) para que a instância possa acessar o S3 e o DynamoDB.
+D) Criptografar as credenciais da AWS por meio de uma biblioteca de criptografia personalizada e salvá-las em um diretório secreto nas instâncias EC2. O código da aplicação pode então descriptografar com segurança as credenciais da AWS para fazer as chamadas de API para o S3 e o DynamoDB.
+Resposta: C
+Domínio: 1
+Um administrador de sistemas criou uma zona hospedada privada (private hosted zone) e a associou a uma Virtual Private Cloud (VPC). No entanto, as consultas de DNS para a zona hospedada privada continuam sem resolução. Como Arquiteto de Soluções, você pode identificar as opções da Amazon VPC a serem configuradas para fazer a zona hospedada privada funcionar?
+A) Remover quaisquer namespaces sobrepostos para as zonas hospedadas privadas e públicas.
+B) Habilitar os hostnames de DNS (DNS hostnames) e a resolução de DNS (DNS resolution) para zonas hospedadas privadas na VPC.
+C) Corrigir os conflitos entre sua zona hospedada privada e qualquer regra do Resolver que roteie o tráfego para sua rede para o mesmo nome de domínio, pois isso resulta em ambiguidade sobre a rota a ser tomada.
+D) Corrigir o registro de servidor de nomes (NS) e os registros de Início de Autoridade (SOA) que possam ter sido criados com configurações erradas.
+Resposta: B
+Domínio: 1
+Uma organização deseja delegar acesso a um conjunto de usuários do ambiente de desenvolvimento para que eles possam acessar alguns recursos no ambiente de produção que é gerenciado sob outra conta AWS. Como arquiteto de soluções, qual das seguintes etapas você recomendaria?
+A) Criar novas credenciais de usuário IAM para o ambiente de produção e compartilhar essas credenciais com o conjunto de usuários do ambiente de desenvolvimento.
+B) Tanto funções IAM quanto usuários IAM podem ser usados de forma intercambiável para acesso entre contas.
+C) Não é possível acessar recursos entre contas diferentes da AWS.
+D) Criar uma nova função IAM (IAM role) com as permissões necessárias para acessar os recursos no ambiente de produção. Os usuários podem então assumir essa função IAM ao acessar os recursos do ambiente de produção.
+Resposta: D
+Domínio: 1
+Uma empresa de mídia criou uma conexão AWS Direct Connect para migrar sua principal aplicação para a Nuvem AWS. A aplicação local grava centenas de arquivos de vídeo em um sistema de arquivos NFS montado diariamente. Após a migração, a empresa hospedará a aplicação em uma instância Amazon EC2 com um sistema de arquivos EFS montado. Antes do encerramento da migração, a empresa deve construir um processo que replicará os arquivos de vídeo locais recém-criados para o sistema de arquivos EFS. Qual das seguintes opções representa a maneira MAIS eficiente operacionalmente de atender a esse requisito?
+A) Configurar um agente do AWS DataSync no servidor local que tenha acesso ao sistema de arquivos NFS. Transferir dados pela conexão do Direct Connect para um bucket do S3 usando um endpoint VPC do S3. Configurar uma função AWS Lambda para processar notificações de eventos do Amazon S3 e copiar os arquivos de vídeo do Amazon S3 para o sistema de arquivos EFS.
+B) Configurar um agente do AWS DataSync no servidor local que tenha acesso ao sistema de arquivos NFS. Transferir dados pela conexão do Direct Connect para un bucket do S3 usando VIF pública. Configurar uma função AWS Lambda para processar notificações de eventos do Amazon S3 e copiar os arquivos de vídeo do Amazon S3 para o sistema de arquivos EFS.
+C) Configurar um agente do AWS DataSync no servidor local que tenha acesso ao sistema de arquivos NFS. Transferir dados pela conexão do Direct Connect para um endpoint de VPC peering da AWS para o Amazon EFS usando um VIF privado. Configurar uma tarefa agendada do DataSync para enviar os arquivos de vídeo para o sistema de arquivos EFS a cada 24 horas.
+D) Configurar um agente do AWS DataSync no servidor local que tenha acesso ao sistema de arquivos NFS. Transferir dados pela conexão do Direct Connect para um endpoint VPC de interface do AWS PrivateLink para o Amazon EFS usando um VIF privado. Configurar uma tarefa agendada do DataSync para enviar os arquivos de vídeo para o sistema de arquivos EFS a cada 24 horas.
+Resposta: D
+Domínio: 3
+A equipe de engenharia de uma empresa de análise de dados observou que sua principal aplicação funciona com desempenho máximo quando as instâncias EC2 subjacentes têm uma utilização de CPU de cerca de 50%. A aplicação é construída em uma frota de instâncias EC2 gerenciadas sob um grupo de Auto Scaling. As solicitações são tratadas por um Application Load Balancer interno que roteia o tráfego para as instâncias. Como arquiteto de soluções, o que você recomendaria para que a aplicação funcione perto de seu estado de desempenho máximo?
+A) Alarme do CloudWatch em 50% de utilização de CPU.
+B) Política de dimensionamento por rastreamento de destino (Target tracking policy) com meta de utilização de CPU de 50%.
+C) Política de dimensionamento simples com meta de utilização de CPU de 50%.
+D) Política de dimensionamento por etapas (Step scaling policy) com meta de utilização de CPU de 50%.
+Resposta: B
+Domínio: 3
+Uma empresa de varejo deseja lançar e testar uma implantação azul-verde (blue-green deployment) para sua aplicação global nas próximas 48 horas. A maioria dos clientes usa telefones celulares que são propensos a problemas de cache de DNS. A empresa deve testar a implantação no maior número possível de usuários antes da venda de Ação de Graças. Como Arquiteto de Soluções, qual das seguintes opções você recomendaria?
+A) Usar o AWS Global Accelerator para distribuir uma parte do tráfego para uma implantação específica.
+B) Usar as opções de implantação do AWS CodeDeploy para escolher a implantação correta.
+C) Usar o Elastic Load Balancer para distribuir o tráfego entre as implantações.
+D) Usar o roteamento ponderado do Route 53 para distribuir o tráfego entre diferentes implantações.
+Resposta: A
+Domínio: 3
+Uma empresa líder em análise de mídia social está pensando em mover sua pilha de aplicações conteinerizadas para la Nuvem AWS. A empresa não tem certeza sobre a estrutura de preços para o uso do Elastic Container Service (ECS) com o tipo de lançamento EC2 em comparação com o Elastic Container Service (ECS) com o tipo de lançamento Fargate. Qual das seguintes opções está correta em relação ao faturamento desses dois serviços?
+A) Tanto o ECS com tipo de lançamento EC2 quanto o ECS com tipo de lançamento Fargate são cobrados com base nas instâncias EC2 e volumes EBS usados.
+B) Tanto o ECS com tipo de lançamento EC2 quanto o ECS com tipo de lançamento Fargate são cobrados com base nos recursos de vCPU e memória que a aplicação conteinerizada solicita.
+C) Tanto o ECS com tipo de lançamento EC2 quanto o ECS com tipo de lançamento Fargate são cobrados apenas com base no Elastic Container Service usado por hora.
+D) O ECS com tipo de lançamento EC2 é cobrado com base nas instâncias EC2 e volumes EBS usados. O ECS com tipo de lançamento Fargate é cobrado com base nos recursos de vCPU e memória que a aplicação conteinerizada solicita.
+Resposta: D
+Domínio: 3
+Um desenvolvedor configurou o tráfego de entrada para as portas relevantes tanto no Security Group da instância EC2 quanto na Network Access Control List (NACL) da sub-rede para a instância EC2. O desenvolvedor está, no entanto, incapaz de se conectar ao serviço em execução na instância Amazon EC2. Como arquiteto de soluções, como você corrigirá esse problema?
+A) As regras associadas às Network ACLs nunca devem ser modificadas a partir da linha de comando. Uma tentativa de modificar regras a partir da linha de comando bloqueia a regra e resulta em um comportamento errático.
+B) Os Security Groups são stateful, portanto, permitir o tráfego de entrada para as portas necessárias habilita a conexão. As Network ACLs são stateless, portanto, você deve permitir tanto o tráfego de entrada quanto o de saída.
+C) A função IAM definida no Security Group é diferente da função IAM que recebe acesso nas Network ACLs.
+D) O Network ACLs são stateful, portanto, permitir o tráfego de entrada para as portas necessárias habilita a conexão. Os Security Groups são stateless, portanto, você deve permitir tanto o tráfego de entrada quanto o de saída.
+Resposta: B
+Domínio: 1
+A equipe de engenharia de uma empresa de fitness doméstico deseja otimizar os custos do EC2 misturando instâncias sob demanda e spot em vários tipos de instâncias em um grupo de Auto Scaling. Qual das seguintes opções permitiria à equipe provisionar as instâncias para este caso de uso?
+A) Você não pode usar uma configuração de lançamento (launch configuration) nem um template de lançamento (launch template) para provisionar capacidade em vários tipos de instâncias usando tanto instâncias sob demanda quanto instâncias spot.
+B) Você só pode usar uma configuração de lançamento para provisionar capacidade em vários tipos de instâncias usando tanto instâncias sob demanda quanto instâncias spot para atingir a escala, o desempenho e o custo desejados.
+C) Você pode usar uma configuração de lançamento ou um template de lançamento para provisionar capacidade em vários tipos de instâncias usando tanto instâncias sob demanda quanto instâncias spot.
+D) Você só pode usar um template de lançamento para provisionar capacidade em vários tipos de instâncias usando tanto instâncias sob demanda quanto instâncias spot para atingir a escala, o desempenho e o custo desejados.
+Resposta: D
+Domínio: 3
+A equipe de engenharia de uma empresa de fitness doméstico está avaliando vários repositórios de dados em memória com a capacidade de alimentar seu placar de líderes (leaderboard) ao vivo sob demanda. O placar da empresa exige alta disponibilidade, baixa latência e processamento em tempo real. Como arquiteto de soluções, qual das seguintes soluções você recomendaria? (Selecione duas)
+A) Alimentar o placar ao vivo sob demanda usando o DynamoDB com o DynamoDB Accelerator (DAX), pois ele atende aos requisitos de cache em memória, alta disponibilidade e baixa latência.
+B) Alimentar o placar ao vivo sob demanda usando o RDS Aurora, pois ele atende aos requisitos de cache em memória, alta disponibilidade e baixa latência.
+C) Alimentar o placar ao vivo sob demanda usando o AWS Neptune, pois ele atende aos requisitos de cache em memória, alta disponibilidade e baixa latência.
+D) Alimentar o placar ao vivo sob demanda usando o ElastiCache Redis, pois ele atende aos requisitos de cache em memória, alta disponibilidade e baixa latência.
+E) Alimentar o placar ao vivo sob demanda usando o DynamoDB isolado, pois ele atende aos requisitos de cache em memória, alta disponibilidade e baixa latência.
+Resposta: A e D
+Domínio: 2
+Uma empresa executa um fluxo de trabalho de processamento de dados que leva cerca de 60 minutos para ser concluído. O fluxo de trabalho pode resistir a interrupções e pode ser iniciado e parado várias vezes. Qual é a solução mais econômica para construir uma solução para o fluxo de trabalho?
+A) Usar instâncias spot do EC2 para executar os processos do fluxo de trabalho.
+B) Usar instâncias reservadas do EC2 para executar os processos do fluxo de trabalho.
+C) Usar instâncias sob demanda do EC2 para executar os processos do fluxo de trabalho.
+D) Usar a função AWS Lambda para executar os processos do fluxo de trabalho.
+Resposta: A
+Domínio: 3
+Sua empresa possui um serviço local de replicação do Distributed File System (DFSR) para manter pastas sincronizadas em vários servidores Windows e gostaria de migrar para a nuvem AWS. O que você recomenda como substituto para o DFSR?
+A) EFS
+B) FSx for Windows File Server
+C) Amazon S3
+D) FSx for Lustre
+Resposta: B
+Domínio: 2
+Um novo engenheiro de DevOps acabou de se juntar a uma equipe de desenvolvimento e deseja entender os recursos de replicação para RDS Multi-AZ, bem como para réplicas de leitura do RDS. Qual das seguintes opções resume corretamente esses recursos para o banco de dados apresentado?
+A) O Multi-AZ segue a replicação assíncrona e abrange pelo menos duas Zonas de Disponibilidade dentro de uma única região. As réplicas de leitura seguem a replicação síncrona e podem estar dentro de uma Zona de Disponibilidade, entre AZs ou entre regiões.
+B) O Multi-AZ segue a replicação assíncrona e abrange uma Zona de Disponibilidade dentro de uma única região. As réplicas de leitura seguem a replicação síncrona e podem estar dentro de uma Zona de Disponibilidade, entre AZs ou entre regiões.
+C) O Multi-AZ segue a replicação síncrona e abrange pelo menos duas Zonas de Disponibilidade dentro de uma única região. As réplicas de leitura seguem a replicação assíncrona e podem estar dentro de uma Zona de Disponibilidade, entre AZs ou entre regiões.
+D) O Multi-AZ segue a replicação assíncrona e abrange pelo menos duas Zonas de Disponibilidade dentro de uma única região. As réplicas de leitura seguem a replicação assíncrona e podem estar dentro de uma Zona de Disponibilidade, entre AZs ou entre regiões.
+Resposta: C
+Domínio: 4
+Um grupo de pesquisa de Aprendizado de Máquina usa uma aplicação de computação visual proprietária hospedada em uma instância EC2. Toda vez que a instância precisa ser parada e iniciada novamente, a aplicação leva cerca de 3 minutos para iniciar, pois alguns programas de software auxiliares precisam ser executados. O grupo de pesquisa gostaria de minimizar o tempo de bootstrap da aplicação sempre que o sistema precisar ser parado e iniciado posteriormente. Como arquiteto de soluções, qual das seguintes soluções você recomendaria para este caso de uso?
+A) Usar metadados do EC2 (EC2 Meta-Data)
+B) Usar dados do usuário do EC2 (EC2 User-Data)
+C) Criar uma AMI e lançar suas instâncias EC2 a partir dela
+D) Usar a hibernação de instância EC2 (EC2 Instance Hibernate)
+Resposta: D
+Domínio: 1
+Uma liga de futebol europeia concedeu direitos de distribuição exclusivos apenas para os EUA para a transmissão ao vivo de partidas. A empresa de streaming deve garantir que apenas usuários dos EUA possam acessar as partidas, enquanto usuários de outros países sejam negados. Quais das seguintes opções permitiriam à empresa aplicar essas restrições de streaming? (Selecione duas)
+A) Usar a política de roteamento de failover baseada no Route 53 para restringir a distribuição de conteúdo apenas aos locais nos quais você possui direitos de distribuição.
+B) Usar a política de roteamento de geolocalização baseada no Route 53.
+C) Usar a política de roteamento por latência baseada no Route 53 para restringir a distribuição de conteúdo apenas aos locais nos quais você possui direitos de distribuição.
+D) Usar a política de roteamento ponderado baseada no Route 53 para restringir a distribuição de conteúdo apenas aos locais nos quais você possui direitos de distribuição.
+E) Usar restrição geográfica (georestriction) com o Amazon CloudFront.
+Resposta: B e E
+Domínio: 1
+Uma agência de pesquisa geológica mantém dados sismológicos dos últimos 100 anos. Os dados têm uma velocidade de entrada de 1 GB por minuto. Você gostaria de armazenar os dados apenas com os atributos mais relevantes para construir um modelo preditivo para terremotos. Quais serviços da AWS você usaria para construir a solução mais econômica com a MENOR quantidade de manutenção de infraestrutura?
+A) Ingerir os dados no Kinesis Data Firehose e usar uma função Lambda intermediária para filtrar e transformar o fluxo de entrada antes que a saída seja gravada no S3.
+B) Ingerir os dados no Kinesis Data Streams e usar uma função Lambda intermediária para filtrar e transformar o fluxo de entrada antes que a saída seja gravada no S3.
+C) Ingerir os dados no Kinesis Data Analytics e usar consultas SQL para filtrar e transformar os dados antes de gravar no S3.
+D) Ingerir os dados em um cluster Spark Streaming no EMR e usar transformações do Spark Streaming antes de gravar no S3.
+Resposta: A
+Domínio: 3
+O CloudFront oferece um cache de várias camadas na forma de caches de borda regionais que melhoram a latência. No entanto, existem certos tipos de conteúdo que ignoram o cache de borda regional e vão diretamente para a origem. Quais dos seguintes tipos de conteúdo ignoram o cache de borda regional? (Selecione duas)
+A) Ativos de comércio eletrônico, como fotos de produtos.
+B) Métodos de proxy PUT/POST/PATCH/OPTIONS/DELETE vão diretamente para a origem.
+C) Conteúdo dinâmico, conforme determinado no momento da solicitação (comportamento de cache configurado para encaminhar todos os cabeçalhos).
+D) Conteúdo estático, como folhas de estilo e arquivos JavaScript.
+E) Vídeos gerados por usuários.
+Resposta: B e C
+Domínio: 3
+Um blogueiro de tecnologia deseja escrever uma avaliação sobre os preços comparativos para vários tipos de armazenamento disponíveis na Nuvem AWS. O blogueiro criou um arquivo de teste de tamanho 1 GB com dados aleatórios. Em seguida, ele copia esse arquivo de teste para a classe de armazenamento S3 Standard, provisiona um volume EBS (General Purpose SSD (gp2)) com 100 GB de armazenamento provisionado e copia o arquivo de teste para o volume EBS e, por último, copia o arquivo de teste para um sistema de arquivos EFS Standard. No final do mês, ele analisa a fatura dos custos incorridos nos respectivos tipos de armazenamento para o arquivo de teste. Qual é a ordem correta das cobranças de armazenamento incorridas para o arquivo de teste nesses três tipos de armazenamento?
+A) Custo do armazenamento no S3 Standard < Custo do armazenamento no EBS < Custo do armazenamento no EFS
+B) Custo do armazenamento no EFS < Custo do armazenamento no S3 Standard < Custo do armazenamento no EBS
+C) Custo do armazenamento no EBS < Custo do armazenamento no S3 Standard < Custo do armazenamento no EFS
+D) Custo do armazenamento no S3 Standard < Custo do armazenamento no EFS < Custo do armazenamento no EBS
+Resposta: D
+Domínio: 3
+A equipe de engenharia de um clube de futebol profissional espanhol construiu um sistema de notificação para seu site usando notificações do Amazon SNS que são tratadas por uma função Lambda para entrega ao usuário final. Durante a pré-temporada, o sistema precisa lidar com cerca de 100 solicitações por segundo. Durante o pico da temporada de futebol, a taxa atinge cerca de 5.000 solicitações por segundo e nota-se que um número significativo de notificações não está sendo entregue aos usuários finais no site. Como arquiteto de soluções, qual das seguintes opções você sugeriria como a MELHOR solução possível para esse problema?
+A) A equipe de engenharia precisa provisionar mais servidores executando o serviço Lambda.
+B) As entregas de mensagens do Amazon SNS para o AWS Lambda ultrapassaram a cota de concorrência da conta para o Lambda, portanto, a equipe precisa entrar em contato com o suporte da AWS para aumentar o limite da conta.
+C) O Amazon SNS atingiu um limite de escalabilidade, portanto, a equipe precisa entrar em contato com o suporte da AWS para aumentar o limite da conta.
+D) A equipe de engenharia precisa provisionar mais servidores executando o serviço SNS.
+Resposta: B
+Domínio: 3
+Como parte de um programa piloto, uma empresa de biotecnologia deseja integrar arquivos de dados de sua aplicação analítica local com a Nuvem AWS por meio de uma interface NFS. Qual dos seguintes serviços da AWS é a solução MAIS eficiente para o caso de uso apresentado?
+A) AWS Storage Gateway - File Gateway
+B) AWS Storage Gateway - Tape Gateway
+C) AWS Site-to-Site VPN
+D) AWS Storage Gateway - Volume Gateway
+Resposta: A
+Domínio: 2
+Uma empresa de serviços financeiros lançou recentemente uma iniciativa para melhorar a segurança de seus recursos na AWS e habilitou o AWS Shield Advanced em várias contas da AWS pertencentes à empresa. Após análise, a empresa constatou que os custos incorridos foram muito maiores do que o esperado. Qual das seguintes opções você atribuiria como a razão subjacente para os custos inesperadamente altos do serviço AWS Shield Advanced?
+A) O AWS Shield Advanced está sendo usado para servidores personalizados que não fazem parte da Nuvem AWS, resultando em custos mais elevados.
+B) O faturamento consolidado não foi ativado. Todas as contas da AWS devem estar sob um único faturamento consolidado para que a taxa mensal seja cobrada apenas uma vez.
+C) Os Planos de Economia (Savings Plans) não foram ativados para o serviço AWS Shield Advanced em todas as contas da AWS.
+D) O AWS Shield Advanced também abrange o plano AWS Shield Standard, resultando em custos adicionais.
+Resposta: B
+Domínio: 1
