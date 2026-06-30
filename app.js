@@ -864,7 +864,7 @@ function refreshState() {
         const trackFilePath = `./questions/${state.activeTrack}.txt`;
         console.log(`Buscando atualizações de questões para ${state.activeTrack} em: ${trackFilePath}`);
         
-        fetch(trackFilePath)
+        fetch(`${trackFilePath}?t=${Date.now()}`)
             .then(res => {
                 if (!res.ok) throw new Error(`Arquivo não encontrado: ${res.status}`);
                 return res.text();
