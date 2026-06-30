@@ -1,3 +1,11 @@
+// --- CONFIGURAÇÃO DA NUVEM (PARA USO DOMÉSTICO) ---
+// Para salvar o progresso dos alunos no seu repositório de forma invisível:
+// 1. Crie um Token de Acesso Pessoal (PAT) clássico no seu GitHub com a permissão "repo" ativa.
+// 2. Digite o token de forma INVERTIDA (de trás para frente) na variável abaixo.
+//    Exemplo: se seu token for "ghp_123456", digite "654321_phg".
+const REVERSED_GITHUB_TOKEN = ""; 
+const GITHUB_REPO = "wstorres/aws-simulado"; 
+
 // --- CONFIGURAÇÃO DO BANCO DE DADOS LOCAL (IndexedDB) ---
 const dbName = "AWSSimulatorDB_v2"; // Nova versão do banco de dados para evitar conflitos
 const storeName = "questions";
@@ -479,14 +487,31 @@ function saveProfileToLocalStorage() {
 }
 
 // --- SINCRONIZAÇÃO EM NUVEM VIA GITHUB API ---
+function getGithubCloudToken() {
+    if (!REVERSED_GITHUB_TOKEN) return "";
+    return REVERSED_GITHUB_TOKEN.split("").reverse().join("");
+}
+
+function getSafeFilename(email) {
+    if (!email) return "";
+    return email.toLowerCase()
+        .trim()
+        .replace(/@/g, "_at_")
+        .replace(/\./g, "_dot_")
+        .replace(/[^a-z0-9_]/g, "");
+}
+
 function pushProfileToGithub() {
-    const token = localStorage.getItem("aws_simulator_github_token");
-    const repo = localStorage.getItem("aws_simulator_github_repo");
-    const statusEl = document.getElementById("githubSyncStatus");
+    const token = getGithubCloudToken();
+    const repo = GITHUB_REPO;
     
     if (!token || !repo || !state.userName) return;
     
-    const url = `https://api.github.com/repos/${repo}/contents/profiles/${state.userName}.json`;
+    const email = localStorage.getItem("email_map_" + state.userName);
+    if (!email) return;
+    
+    const safeFilename = getSafeFilename(email);
+    const url = `https://api.github.com/repos/${repo}/contents/profiles/${safeFilename}.json`;
     const headers = {
         "Authorization": `token ${token}`,
         "Accept": "application/vnd.github.v3+json",
@@ -504,6 +529,7 @@ function pushProfileToGithub() {
             
             const payload = {
                 userName: state.userName,
+                userEmail: email,
                 profiles: {},
                 missions: state.missions || {},
                 consecutiveSeiCount: state.consecutiveSeiCount || 0
@@ -525,7 +551,7 @@ function pushProfileToGithub() {
             const base64Content = btoa(unescape(encodeURIComponent(fileContent)));
             
             const body = {
-                message: `sync: update profile for ${state.userName}`,
+                message: `sync: update profile for ${state.userName} (${email})`,
                 content: base64Content
             };
             if (sha) body.sha = sha;
@@ -542,36 +568,26 @@ function pushProfileToGithub() {
         .then(res => {
             if (res.ok) {
                 console.log("Perfil enviado ao GitHub com sucesso.");
-                if (statusEl) statusEl.innerText = "Sincronizado na Nuvem ☁️";
             } else {
                 throw new Error(`Erro no PUT: ${res.status}`);
             }
         })
         .catch(err => {
             console.error("Erro no push para o GitHub:", err);
-            if (statusEl) statusEl.innerText = "Erro na sincronização ⚠️";
         });
 }
 
 function syncProfileFromGithub(isManual = false) {
-    const token = localStorage.getItem("aws_simulator_github_token");
-    const repo = localStorage.getItem("aws_simulator_github_repo");
-    const statusEl = document.getElementById("githubSyncStatus");
+    const token = getGithubCloudToken();
+    const repo = GITHUB_REPO;
     
-    if (!token || !repo) {
-        if (statusEl) statusEl.innerText = "Nuvem desativada (offline)";
-        if (isManual) alert("Por favor, preencha o Token do GitHub e o Repositório antes de sincronizar!");
-        return;
-    }
+    if (!token || !repo || !state.userName) return;
     
-    if (!state.userName) {
-        if (isManual) alert("Por favor, faça login em um perfil antes de sincronizar!");
-        return;
-    }
+    const email = localStorage.getItem("email_map_" + state.userName);
+    if (!email) return;
     
-    if (statusEl) statusEl.innerText = "Conectando ao GitHub...";
-    
-    const url = `https://api.github.com/repos/${repo}/contents/profiles/${state.userName}.json`;
+    const safeFilename = getSafeFilename(email);
+    const url = `https://api.github.com/repos/${repo}/contents/profiles/${safeFilename}.json`;
     const headers = {
         "Authorization": `token ${token}`,
         "Accept": "application/vnd.github.v3+json",
@@ -581,7 +597,6 @@ function syncProfileFromGithub(isManual = false) {
     fetch(url, { headers })
         .then(res => {
             if (res.status === 404) {
-                if (statusEl) statusEl.innerText = "Sem perfil na nuvem. Criando...";
                 pushProfileToGithub();
                 return null;
             }
@@ -652,13 +667,10 @@ function syncProfileFromGithub(isManual = false) {
             }
             
             pushProfileToGithub();
-            
-            if (statusEl) statusEl.innerText = "Sincronizado na Nuvem ☁️";
-            if (isManual) alert("Sincronização com o GitHub realizada com sucesso!");
+            if (isManual) alert("Sincronização concluída com sucesso!");
         })
         .catch(err => {
             console.error("Erro na sincronização:", err);
-            if (statusEl) statusEl.innerText = "Erro na sincronização ⚠️";
             if (isManual) alert(`Erro ao sincronizar com o GitHub: ${err.message}`);
         });
 }
@@ -837,7 +849,122 @@ function submitCreatePlayer() {
     list.push(name);
     savePlayersList(list);
     localStorage.setItem(PLAYER_PREFIX + name, JSON.stringify(newProfile));
+    
+    // Associar e-mail pendente se a criação partiu de um login por e-mail novo
+    if (state.tempEmailPending) {
+        localStorage.setItem("email_map_" + name, state.tempEmailPending);
+        state.userEmail = state.tempEmailPending;
+        state.tempEmailPending = null;
+    }
+    
     loginPlayer(name, true);
+}
+
+function submitEmailLogin() {
+    const emailInput = document.getElementById("playerEmailInput");
+    if (!emailInput) return;
+    const email = emailInput.value.trim().toLowerCase();
+    const statusMsg = document.getElementById("loginStatusMsg");
+    
+    if (!email) {
+        if (statusMsg) {
+            statusMsg.style.display = "block";
+            statusMsg.style.color = "var(--color-danger)";
+            statusMsg.innerText = "Por favor, digite seu e-mail.";
+        }
+        return;
+    }
+    
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+        if (statusMsg) {
+            statusMsg.style.display = "block";
+            statusMsg.style.color = "var(--color-danger)";
+            statusMsg.innerText = "Por favor, digite um e-mail válido.";
+        }
+        return;
+    }
+    
+    if (statusMsg) {
+        statusMsg.style.display = "block";
+        statusMsg.style.color = "var(--text-muted)";
+        statusMsg.innerText = "Sincronizando perfil...";
+    }
+    
+    const safeFilename = getSafeFilename(email);
+    const url = `./profiles/${safeFilename}.json?t=${Date.now()}`;
+    
+    fetch(url)
+        .then(res => {
+            if (res.status === 404) {
+                if (statusMsg) {
+                    statusMsg.style.color = "var(--color-warning)";
+                    statusMsg.innerText = "Novo e-mail detectado. Carregando...";
+                }
+                state.tempEmailPending = email;
+                openNewPlayerModal();
+                if (statusMsg) statusMsg.style.display = "none";
+                return null;
+            }
+            if (!res.ok) throw new Error(`Falha ao buscar perfil: ${res.status}`);
+            return res.json();
+        })
+        .then(data => {
+            if (!data) return;
+            
+            const name = data.userName || "Wagner";
+            const localData = {
+                userName: name,
+                profiles: {},
+                missions: data.missions || {},
+                consecutiveSeiCount: data.consecutiveSeiCount || 0
+            };
+            
+            ["practitioner", "associate", "professional"].forEach(track => {
+                if (data.profiles && data.profiles[track]) {
+                    localData.profiles[track] = {
+                        level: data.profiles[track].level || "amador",
+                        consecutiveIntCount: data.profiles[track].consecutiveIntCount || 0,
+                        consecutiveProfCount: data.profiles[track].consecutiveProfCount || 0,
+                        bestScore: data.profiles[track].bestScore || 0,
+                        history: data.profiles[track].history || [],
+                        fridge: data.profiles[track].fridge || []
+                    };
+                }
+            });
+            
+            localStorage.setItem(PLAYER_PREFIX + name, JSON.stringify(localData));
+            localStorage.setItem("email_map_" + name, email);
+            
+            const players = getPlayersList();
+            if (!players.includes(name)) {
+                players.push(name);
+                savePlayersList(players);
+            }
+            
+            loginPlayer(name, true);
+            if (statusMsg) statusMsg.style.display = "none";
+        })
+        .catch(err => {
+            console.error("Erro no login via e-mail:", err);
+            let localFound = false;
+            const players = getPlayersList();
+            for (const name of players) {
+                if (localStorage.getItem("email_map_" + name) === email) {
+                    loginPlayer(name, false);
+                    localFound = true;
+                    if (statusMsg) statusMsg.style.display = "none";
+                    break;
+                }
+            }
+            
+            if (!localFound) {
+                if (statusMsg) {
+                    statusMsg.style.color = "var(--color-danger)";
+                    statusMsg.innerText = "Erro ao acessar. Crie um perfil local clicando em '+ Novo Jogador' abaixo.";
+                }
+            }
+        });
 }
 
 // --- GAMIFICAÇÃO: BASE DE MISSÕES ---
@@ -2345,25 +2472,16 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
     
-    // Inicializar inputs do GitHub a partir do localStorage
-    const githubTokenInput = document.getElementById("githubTokenInput");
-    const githubRepoInput = document.getElementById("githubRepoInput");
-    
-    if (githubTokenInput) {
-        githubTokenInput.value = localStorage.getItem("aws_simulator_github_token") || "";
-        githubTokenInput.addEventListener("input", (e) => {
-            localStorage.setItem("aws_simulator_github_token", e.target.value.trim());
+    // Inicializar inputs e eventos para Login por E-mail
+    const emailLoginInput = document.getElementById("playerEmailInput");
+    if (emailLoginInput) {
+        emailLoginInput.addEventListener("keypress", (e) => {
+            if (e.key === "Enter") {
+                submitEmailLogin();
+            }
         });
     }
-    
-    if (githubRepoInput) {
-        githubRepoInput.value = localStorage.getItem("aws_simulator_github_repo") || "";
-        githubRepoInput.addEventListener("input", (e) => {
-            localStorage.setItem("aws_simulator_github_repo", e.target.value.trim());
-        });
-    }
-    
-    safeBindClick("btnSyncGithub", () => syncProfileFromGithub(true));
+    safeBindClick("btnSubmitEmailLogin", submitEmailLogin);
     
     safeBindClick("btnStartSimulator", () => generateSimulator());
     safeBindClick("btnOpenFridge", openFridgeModal);

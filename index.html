@@ -48,8 +48,18 @@
             <div class="welcome-section-wrapper">
                 <div class="welcome-inner">
                     <h1>AWS Cloud Practice Simulator</h1>
-                    <p class="subtitle">Selecione seu perfil ou crie um novo para iniciar os simulados</p>
+                    <p class="subtitle">Acesse seu perfil ou selecione um jogador local para começar</p>
                     
+                    <!-- Email Login / Cloud Fetch Card -->
+                    <div class="glass-card login-card" style="max-width: 420px; margin: 0 auto 1.5rem auto; padding: 1.25rem; text-align: center; border: 1px solid var(--border-color); border-radius: var(--border-radius-sm);">
+                        <h3 style="font-size: 0.95rem; color: var(--text-highlight); margin-bottom: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px;">Acessar Perfil em Nuvem ☁️</h3>
+                        <div style="display: flex; flex-direction: column; gap: 0.6rem;">
+                            <input type="email" id="playerEmailInput" class="custom-input" placeholder="Digite seu e-mail (Ex: wagner@email.com)" style="text-align: center; padding: 0.6rem 0.8rem; font-size: 0.9rem;">
+                            <button class="btn btn-primary" id="btnSubmitEmailLogin" style="padding: 0.55rem; font-size: 0.9rem; font-weight: 600;">Entrar 🚀</button>
+                        </div>
+                        <div id="loginStatusMsg" style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem; display: none;"></div>
+                    </div>
+
                     <div class="profile-select-grid" id="profileSelectGrid">
                         <!-- Renderizado dinamicamente via Javascript -->
                     </div>
@@ -231,22 +241,6 @@
                                 <option value="professional">AWS Certified Solutions Architect - Professional (SAP-C02)</option>
                             </select>
                         </div>
-                        
-                        <!-- GitHub Sync Section -->
-                        <div class="github-sync-section">
-                            <h4>☁️ Sincronização GitHub (Nuvem)</h4>
-                            <div class="input-group">
-                                <label for="githubTokenInput">GitHub Token (PAT)</label>
-                                <input type="password" id="githubTokenInput" class="custom-input" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
-                            </div>
-                            <div class="input-group">
-                                <label for="githubRepoInput">Repositório GitHub</label>
-                                <input type="text" id="githubRepoInput" class="custom-input" placeholder="usuario/repositorio">
-                            </div>
-                            <button class="btn btn-secondary" id="btnSyncGithub">
-                                Sincronizar Agora 🔄
-                            </button>
-                            <div id="githubSyncStatus">Nuvem desativada (offline)</div>
                         </div>
 
                         <!-- Primary Actions Card -->
