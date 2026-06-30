@@ -1709,3 +1709,136 @@ footer a:hover {
     }
 }
 
+/* --- GAMIFICAÇÃO: AJUDAS (SHOW DO MILHÃO) --- */
+.game-helps-row {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+    padding: 0.5rem;
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: var(--border-radius-md);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.game-help-btn {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1.5px solid var(--border-color);
+    padding: 0.6rem 1.2rem;
+    border-radius: var(--border-radius-sm);
+    color: var(--text-main);
+    font-family: 'Outfit', sans-serif;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.game-help-btn:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--border-hover);
+    transform: translateY(-2px);
+}
+
+.game-help-btn:active {
+    transform: translateY(0);
+}
+
+.game-help-btn:disabled {
+    opacity: 0.3;
+    pointer-events: none;
+    background: rgba(0, 0, 0, 0.2);
+    border-color: rgba(255, 255, 255, 0.05);
+    box-shadow: none;
+}
+
+.game-help-btn .help-icon {
+    font-size: 1.1rem;
+}
+
+.game-help-btn .help-badge {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: var(--color-secondary);
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 700;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1.5px solid var(--bg-card);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transition: all var(--transition-fast);
+}
+
+/* Smart Hint Card Style */
+.question-hint-card {
+    background: rgba(245, 158, 11, 0.05);
+    border: 1px dashed var(--color-warning);
+    border-radius: var(--border-radius-sm);
+    padding: 1rem;
+    margin: 1.25rem 0;
+    animation: slideDownFade 0.4s ease-out forwards;
+}
+
+.hint-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--color-warning);
+    font-size: 0.85rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    letter-spacing: 0.5px;
+}
+
+.hint-body {
+    font-size: 0.95rem;
+    color: var(--text-main);
+    line-height: 1.4;
+}
+
+/* Eliminate Option Style */
+.option-item.eliminated {
+    opacity: 0.25;
+    pointer-events: none;
+    border-color: rgba(239, 68, 68, 0.15) !important;
+    background: rgba(239, 68, 68, 0.03) !important;
+    text-decoration: line-through;
+    position: relative;
+    overflow: hidden;
+}
+
+.option-item.eliminated::after {
+    content: "ELIMINADA ❌";
+    position: absolute;
+    right: 1.25rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: var(--color-danger);
+    letter-spacing: 1px;
+    text-decoration: none;
+}
+
+@keyframes slideDownFade {
+    0% {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+

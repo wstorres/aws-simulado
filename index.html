@@ -366,12 +366,40 @@ Domínio: 1</div>
                         <div class="progress-bar" id="quizProgressBar"></div>
                     </div>
 
+                    <!-- Gamification Helps (Show do Milhão style) -->
+                    <div class="game-helps-row">
+                        <button class="game-help-btn" id="helpSkipBtn" title="Pula esta questão e a envia para o final do simulado (Máx 3)">
+                            <span class="help-icon">⏭️</span>
+                            <span class="help-text">Pular</span>
+                            <span class="help-badge" id="helpSkipBadge">3</span>
+                        </button>
+                        <button class="game-help-btn" id="helpHintBtn" title="Fornece uma dica conceitual sobre a resposta correta (Máx 3)">
+                            <span class="help-icon">💡</span>
+                            <span class="help-text">Dica</span>
+                            <span class="help-badge" id="helpHintBadge">3</span>
+                        </button>
+                        <button class="game-help-btn" id="helpEliminateBtn" title="Elimina duas alternativas incorretas (50/50) (Máx 1)">
+                            <span class="help-icon">❌</span>
+                            <span class="help-text">50/50</span>
+                            <span class="help-badge" id="helpEliminateBadge">1</span>
+                        </button>
+                    </div>
+
                     <!-- Question Block -->
                     <div class="question-card">
                         <!-- Domain Indicator during Exam -->
                         <span class="question-domain-tag" id="questionDomainTag">Domínio 1 - Arquitetura Segura</span>
                         
                         <div class="question-text" id="questionText">Questão...</div>
+
+                        <!-- Dynamic Smart Hint Box -->
+                        <div class="question-hint-card" id="questionHintBox" style="display: none;">
+                            <div class="hint-header">
+                                <span class="hint-icon">💡</span>
+                                <strong>DICA DO ARQUITETO</strong>
+                            </div>
+                            <div class="hint-body" id="questionHintText"></div>
+                        </div>
                         
                         <!-- Options List -->
                         <div class="options-list" id="optionsContainer">

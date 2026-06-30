@@ -152,6 +152,14 @@ const state = {
     selectedConfidence: null,
     userAnswers: [],
     
+    // Ajudas de Jogo (Show do Milhão)
+    gameHelps: {
+        skip: 3,
+        hint: 3,
+        eliminate: 1
+    },
+    eliminatedOptions: new Set(),
+    
     // Timer
     timerInterval: null,
     timerSeconds: 0
@@ -1164,6 +1172,14 @@ function generateSimulator() {
     state.selectedOption = null;
     state.selectedConfidence = null;
     
+    // Resetar ajudas de jogo (Show do Milhão)
+    state.gameHelps = {
+        skip: 3,
+        hint: 3,
+        eliminate: 1
+    };
+    state.eliminatedOptions.clear();
+    
     renderQuestion();
     startTimer();
     showSection("quizSection");
@@ -1171,6 +1187,16 @@ function generateSimulator() {
 
 function renderQuestion() {
     const question = state.currentQuiz[state.currentQuestionIndex];
+    
+    // Resetar ajudas da questão anterior
+    state.eliminatedOptions.clear();
+    
+    const hintBox = document.getElementById("questionHintBox");
+    const hintText = document.getElementById("questionHintText");
+    if (hintBox) hintBox.style.display = "none";
+    if (hintText) hintText.innerText = "";
+    
+    updateGameHelpsUI();
     
     document.getElementById("currentQuestionNumber").innerText = state.currentQuestionIndex + 1;
     document.getElementById("totalQuestionsNumber").innerText = state.currentQuiz.length;
@@ -1301,6 +1327,9 @@ function verifyAnswer() {
     document.getElementById("btnVerifyAnswer").style.display = "none";
     const btnNext = document.getElementById("btnNextQuestion");
     btnNext.style.display = "block";
+    
+    // Desabilitar ajudas após a verificação da resposta
+    updateGameHelpsUI();
     
     if (state.currentQuestionIndex === state.currentQuiz.length - 1) {
         btnNext.innerHTML = `
@@ -1844,6 +1873,148 @@ function verifyAdminPassword() {
     }
 }
 
+// --- SISTEMA DE GAMIFICAÇÃO: AJUDAS (SHOW DO MILHÃO) ---
+function updateGameHelpsUI() {
+    const skipBtn = document.getElementById("helpSkipBtn");
+    const hintBtn = document.getElementById("helpHintBtn");
+    const eliminateBtn = document.getElementById("helpEliminateBtn");
+    
+    const skipBadge = document.getElementById("helpSkipBadge");
+    const hintBadge = document.getElementById("helpHintBadge");
+    const eliminateBadge = document.getElementById("helpEliminateBadge");
+    
+    const isAnswerVerified = (document.getElementById("btnVerifyAnswer").style.display === "none");
+    
+    if (state.gameHelps) {
+        if (skipBadge) skipBadge.innerText = state.gameHelps.skip;
+        if (hintBadge) hintBadge.innerText = state.gameHelps.hint;
+        if (eliminateBadge) eliminateBadge.innerText = state.gameHelps.eliminate;
+        
+        if (skipBtn) {
+            skipBtn.disabled = (isAnswerVerified || state.gameHelps.skip <= 0 || state.currentQuestionIndex === state.currentQuiz.length - 1);
+        }
+        if (hintBtn) {
+            hintBtn.disabled = (isAnswerVerified || state.gameHelps.hint <= 0);
+        }
+        if (eliminateBtn) {
+            eliminateBtn.disabled = (isAnswerVerified || state.gameHelps.eliminate <= 0);
+        }
+    }
+}
+
+function handleGameHelpSkip() {
+    if (!state.gameHelps || state.gameHelps.skip <= 0) return;
+    
+    if (state.currentQuestionIndex === state.currentQuiz.length - 1) {
+        alert("Não é possível pular a última questão do simulado!");
+        return;
+    }
+    
+    state.gameHelps.skip--;
+    
+    const currentQ = state.currentQuiz[state.currentQuestionIndex];
+    state.currentQuiz.splice(state.currentQuestionIndex, 1);
+    state.currentQuiz.push(currentQ);
+    
+    renderQuestion();
+}
+
+function handleGameHelpHint() {
+    if (!state.gameHelps || state.gameHelps.hint <= 0) return;
+    
+    const question = state.currentQuiz[state.currentQuestionIndex];
+    if (!question) return;
+    
+    state.gameHelps.hint--;
+    
+    const hint = getSmartHint(question);
+    const hintBox = document.getElementById("questionHintBox");
+    const hintText = document.getElementById("questionHintText");
+    
+    if (hintBox && hintText) {
+        hintText.innerText = hint;
+        hintBox.style.display = "block";
+    }
+    
+    updateGameHelpsUI();
+}
+
+function handleGameHelpEliminate() {
+    if (!state.gameHelps || state.gameHelps.eliminate <= 0) return;
+    
+    const question = state.currentQuiz[state.currentQuestionIndex];
+    if (!question) return;
+    
+    const correctLetter = question.answer.toUpperCase();
+    const allOptions = Object.keys(question.options).map(o => o.toUpperCase());
+    const incorrectOptions = allOptions.filter(opt => opt !== correctLetter);
+    
+    if (incorrectOptions.length === 0) return;
+    
+    state.gameHelps.eliminate--;
+    
+    const shuffled = incorrectOptions.sort(() => 0.5 - Math.random());
+    const toEliminate = shuffled.slice(0, 2);
+    
+    toEliminate.forEach(letter => {
+        state.eliminatedOptions.add(letter);
+        
+        const el = document.querySelector(`.option-item[data-option="${letter}"]`);
+        if (el) {
+            el.classList.add("eliminated");
+            el.classList.remove("selected");
+            if (state.selectedOption === letter) {
+                state.selectedOption = null;
+                checkVerifyButtonEnable();
+            }
+        }
+    });
+    
+    updateGameHelpsUI();
+}
+
+function getSmartHint(question) {
+    const correctLetter = question.answer.toUpperCase();
+    const correctText = question.options[correctLetter] || "";
+    const correctLower = correctText.toLowerCase();
+    
+    const hintsDB = [
+        { keys: ["s3", "simple storage"], hint: "Foque em armazenamento de arquivos (objetos) altamente durável, escalável e com classes de ciclo de vida (Glacier, Intelligent-Tiering)." },
+        { keys: ["ec2", "elastic compute"], hint: "Considere instâncias de servidores virtuais onde você gerencia o sistema operacional convidado e necessita de escalabilidade manual ou por ASG." },
+        { keys: ["rds", "relational database", "aurora", "postgresql", "mysql", "mariadb", "sql server"], hint: "Procure por um serviço gerenciado de banco de dados relacional (SQL) com suporte a Multi-AZ e réplicas de leitura." },
+        { keys: ["dynamodb", "nosql", "dax"], hint: "A resposta correta envolve um banco de dados NoSQL chave-valor totalmente gerenciado de baixíssima latência (milisegundos de um dígito)." },
+        { keys: ["lambda"], hint: "Pense em execução de código Serverless sob demanda (baseada em eventos), cobrada apenas pelo tempo de execução de milissegundos." },
+        { keys: ["fargate"], hint: "Esta solução gerencia contêineres (Docker) de forma Serverless, sem a necessidade de você configurar ou gerenciar servidores virtuais EC2." },
+        { keys: ["route 53", "route53"], hint: "O serviço correto é o DNS gerenciado da AWS que suporta políticas de roteamento complexas (latência, failover, geolocalização)." },
+        { keys: ["cloudfront", "cdn"], hint: "Pense em distribuição de conteúdo estático ou dinâmico globalmente, reduzindo a latência através de Edge Locations." },
+        { keys: ["vpc", "virtual private cloud", "subnet", "peering", "transit gateway"], hint: "Trata-se do isolamento de rede lógica na nuvem AWS, onde você controla tabelas de rotas, sub-redes e segurança." },
+        { keys: ["load balancer", "elb", "alb", "nlb"], hint: "A resposta correta envolve a distribuição do tráfego de rede para múltiplos servidores saudáveis de forma transparente." },
+        { keys: ["efs", "elastic file system"], hint: "Pense em um sistema de arquivos NFS compartilhado que pode ser montado simultaneamente por centenas de instâncias EC2." },
+        { keys: ["ebs", "elastic block store"], hint: "A solução requer armazenamento em bloco persistente de alto desempenho acoplado diretamente a instâncias EC2 individuais." },
+        { keys: ["cloudtrail"], hint: "O serviço adequado é aquele focado em registrar, auditar e reter o histórico de chamadas de API de toda a conta AWS." },
+        { keys: ["cloudwatch"], hint: "A resposta está ligada ao monitoramento de métricas, alarmes e logs de performance dos recursos da infraestrutura." },
+        { keys: ["kms", "key management"], hint: "Foque na criação e gerenciamento de chaves criptográficas (chaves mestras) para proteger dados em repouso." },
+        { keys: ["iam", "identity and access"], hint: "Trata-se de controle de acesso de segurança refinado, com usuários, grupos, papéis (roles) e políticas do IAM." },
+        { keys: ["redshift"], hint: "O cenário envolve um data warehouse analítico (OLAP) baseado em SQL para consultas em volumes de petabytes de dados." },
+        { keys: ["sqs", "simple queue"], hint: "Pense no desacoplamento de microsserviços usando filas de mensagens assíncronas para garantir resiliência e buffering." },
+        { keys: ["sns", "simple notification"], hint: "Trata-se do envio de mensagens de notificação instantâneas em massa no padrão Pub/Sub (tópicos, e-mail, SMS, HTTP)." },
+        { keys: ["auto scaling", "asg"], hint: "Foque no ajuste automático do número de instâncias com base na demanda de CPU ou rede para economizar custos." },
+        { keys: ["trusted advisor"], hint: "A AWS oferece uma ferramenta que avalia sua conta de forma contínua em relação a custos, segurança, desempenho e tolerância a falhas." }
+    ];
+    
+    for (let item of hintsDB) {
+        if (item.keys.some(k => correctLower.includes(k))) {
+            return item.hint;
+        }
+    }
+    
+    const words = correctText.split(' ').filter(w => w.length > 3 && !["amazon", "sobre", "para", "como", "esta", "este"].includes(w.toLowerCase()));
+    if (words.length > 0) {
+        return `Dica conceitual: A alternativa correta está altamente associada a: "${words.slice(0, 2).join(' ')}"`;
+    }
+    
+    return `Dica conceitual: A opção correta é aquela que atende com maior nível de conformidade e escalabilidade o cenário apresentado.`;
+}
 
 // --- FUNÇÃO AUXILIAR PARA BIND SEGURO ---
 function safeBindClick(id, callback) {
@@ -1935,6 +2106,11 @@ document.addEventListener("DOMContentLoaded", () => {
     
     safeBindClick("btnVerifyAnswer", verifyAnswer);
     safeBindClick("btnNextQuestion", nextQuestion);
+    
+    // Botões de ajuda gamificados (Show do Milhão)
+    safeBindClick("helpSkipBtn", handleGameHelpSkip);
+    safeBindClick("helpHintBtn", handleGameHelpHint);
+    safeBindClick("helpEliminateBtn", handleGameHelpEliminate);
     
     safeBindClick("btnQuitQuiz", () => {
         if (confirm("Tem certeza que deseja sair? O progresso desta rodada não será salvo.")) {
