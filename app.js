@@ -422,7 +422,8 @@ function migrateOldProfile() {
                     M4: { progress: 0, completed: false, completedAt: null },
                     M5: { progress: 0, completed: false, completedAt: null },
                     M6: { progress: 0, completed: false, completedAt: null },
-                    M7: { progress: 0, completed: false, completedAt: null }
+                    M7: { progress: 0, completed: false, completedAt: null },
+                    M8: { progress: 0, completed: false, completedAt: null }
                 },
                 consecutiveSeiCount: 0
             };
@@ -508,7 +509,8 @@ function loginPlayer(name, showWelcomeMessage = false) {
                 M4: { progress: 0, completed: false, completedAt: null },
                 M5: { progress: 0, completed: false, completedAt: null },
                 M6: { progress: 0, completed: false, completedAt: null },
-                M7: { progress: 0, completed: false, completedAt: null }
+                M7: { progress: 0, completed: false, completedAt: null },
+                M8: { progress: 0, completed: false, completedAt: null }
             };
             
             state.consecutiveSeiCount = parsed.consecutiveSeiCount || 0;
@@ -635,7 +637,8 @@ function submitCreatePlayer() {
             M4: { progress: 0, completed: false, completedAt: null },
             M5: { progress: 0, completed: false, completedAt: null },
             M6: { progress: 0, completed: false, completedAt: null },
-            M7: { progress: 0, completed: false, completedAt: null }
+            M7: { progress: 0, completed: false, completedAt: null },
+            M8: { progress: 0, completed: false, completedAt: null }
         },
         consecutiveSeiCount: 0
     };
@@ -937,6 +940,9 @@ function updateUI() {
         if (el) el.value = val;
     }
     
+    // Garantir que as missões estejam totalmente avaliadas e sincronizadas
+    evaluateMissions();
+
     // Sincronizar seletor de trilha do jogador
     const playerTrackSelect = document.getElementById("playerTrackSelect");
     if (playerTrackSelect) playerTrackSelect.value = state.activeTrack;
