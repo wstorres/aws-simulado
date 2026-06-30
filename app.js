@@ -892,18 +892,36 @@ function submitEmailLogin() {
     }
     
     const safeFilename = getSafeFilename(email);
-    const url = `./profiles/${safeFilename}.json?t=${Date.now()}`;
+    const [owner, repoName] = GITHUB_REPO.split("/");
+    const url = `https://${owner}.github.io/${repoName}/profiles/${safeFilename}.json?t=${Date.now()}`;
     
     fetch(url)
         .then(res => {
             if (res.status === 404) {
-                if (statusMsg) {
-                    statusMsg.style.color = "var(--color-warning)";
-                    statusMsg.innerText = "Novo e-mail detectado. Carregando...";
+                // Verificar se este e-mail já possui um perfil local no localStorage
+                let localPlayerName = null;
+                const players = getPlayersList();
+                for (const name of players) {
+                    if (localStorage.getItem("email_map_" + name) === email) {
+                        localPlayerName = name;
+                        break;
+                    }
                 }
-                state.tempEmailPending = email;
-                openNewPlayerModal();
-                if (statusMsg) statusMsg.style.display = "none";
+                
+                if (localPlayerName) {
+                    // Perfil existe localmente! Loga e tenta subir pra nuvem
+                    loginPlayer(localPlayerName, false);
+                    if (statusMsg) statusMsg.style.display = "none";
+                } else {
+                    // Novo e-mail e sem cadastro local. Solicitar nome de exibição.
+                    if (statusMsg) {
+                        statusMsg.style.color = "var(--color-warning)";
+                        statusMsg.innerText = "Novo e-mail detectado. Carregando...";
+                    }
+                    state.tempEmailPending = email;
+                    openNewPlayerModal();
+                    if (statusMsg) statusMsg.style.display = "none";
+                }
                 return null;
             }
             if (!res.ok) throw new Error(`Falha ao buscar perfil: ${res.status}`);
