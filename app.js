@@ -1196,8 +1196,6 @@ function renderQuestion() {
     if (hintBox) hintBox.style.display = "none";
     if (hintText) hintText.innerText = "";
     
-    updateGameHelpsUI();
-    
     document.getElementById("currentQuestionNumber").innerText = state.currentQuestionIndex + 1;
     document.getElementById("totalQuestionsNumber").innerText = state.currentQuiz.length;
     
@@ -1257,6 +1255,8 @@ function renderQuestion() {
         
         optionsContainer.appendChild(item);
     });
+    
+    updateGameHelpsUI();
 }
 
 function selectConfidence(value) {
