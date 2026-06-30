@@ -631,6 +631,11 @@ main {
     box-shadow: 0 0 0 3px rgba(255, 153, 0, 0.15);
 }
 
+.custom-input option {
+    background-color: #1a1a20;
+    color: #ffffff;
+}
+
 /* Drag and Drop File Upload Area (Admin) */
 .file-upload-area {
     border: 2px dashed var(--border-color);
