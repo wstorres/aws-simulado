@@ -151,6 +151,7 @@ const state = {
     selectedOption: null,
     selectedConfidence: null,
     userAnswers: [],
+    isAnswerVerified: false,
     
     // Ajudas de Jogo (Show do Milhão)
     gameHelps: {
@@ -1171,6 +1172,7 @@ function generateSimulator() {
     state.userAnswers = [];
     state.selectedOption = null;
     state.selectedConfidence = null;
+    state.isAnswerVerified = false;
     
     // Resetar ajudas de jogo (Show do Milhão)
     state.gameHelps = {
@@ -1190,6 +1192,7 @@ function renderQuestion() {
     
     // Resetar ajudas da questão anterior
     state.eliminatedOptions.clear();
+    state.isAnswerVerified = false;
     
     const hintBox = document.getElementById("questionHintBox");
     const hintText = document.getElementById("questionHintText");
@@ -1283,6 +1286,7 @@ function checkVerifyButtonEnable() {
 }
 
 function verifyAnswer() {
+    state.isAnswerVerified = true;
     const question = state.currentQuiz[state.currentQuestionIndex];
     const correctLetter = question.answer.toUpperCase();
     const selectedLetter = state.selectedOption;
@@ -1883,7 +1887,7 @@ function updateGameHelpsUI() {
     const hintBadge = document.getElementById("helpHintBadge");
     const eliminateBadge = document.getElementById("helpEliminateBadge");
     
-    const isAnswerVerified = (document.getElementById("btnVerifyAnswer").style.display === "none");
+    const isAnswerVerified = state.isAnswerVerified;
     
     if (state.gameHelps) {
         if (skipBadge) skipBadge.innerText = state.gameHelps.skip;
